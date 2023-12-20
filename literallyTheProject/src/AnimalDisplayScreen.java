@@ -58,7 +58,7 @@ public class AnimalDisplayScreen extends JDialog {
                     GridBagConstraints gbc = new GridBagConstraints();
                     gbc.gridx = animalCount % 4;
                     gbc.gridy = animalCount / 4;
-                    gbc.insets = new Insets(5, 5, 5, 5); // Add spacing
+                    gbc.insets = new Insets(10, 10, 10, 10); // Increase spacing
                     mainPanel.add(animalPanel, gbc);
 
                     animalCount++;
@@ -83,14 +83,18 @@ public class AnimalDisplayScreen extends JDialog {
             this.breed = breed;
             this.age = age;
 
-            setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            // Use a MatteBorder for thicker borders
+            setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
             if (imageIcon != null) {
-                // Set the size of the image to2 200x200 or greater value
-                Image scaledImage = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_AREA_AVERAGING);
+                // Set the size of the image to 200x200 or greater value
+                Image scaledImage = imageIcon.getImage().getScaledInstance(180, 180, Image.SCALE_AREA_AVERAGING);
                 ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
                 JLabel imageLabel = new JLabel(scaledImageIcon);
+
+                // Create a thin frame around the image
+                imageLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
                 // Center the image at the top
                 JPanel imagePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -105,17 +109,43 @@ public class AnimalDisplayScreen extends JDialog {
             JLabel typeLabel = new JLabel("Type: " + animalType);
             JLabel breedLabel = new JLabel("Breed: " + breed);
             JLabel ageLabel = new JLabel("Age: " + age);
-            detailsPanel.add(nameLabel);
-            detailsPanel.add(typeLabel);
-            detailsPanel.add(breedLabel);
-            detailsPanel.add(ageLabel);
+
+            // Adjust spacing between labels
+            nameLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+            typeLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+            breedLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+            ageLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+
+            // Use Roboto font for labels with increased font size and center alignment
+            Font robotoFont = new Font("Roboto", Font.PLAIN, 18);
+            nameLabel.setFont(robotoFont);
+            nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            typeLabel.setFont(robotoFont);
+            typeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            breedLabel.setFont(robotoFont);
+            breedLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            ageLabel.setFont(robotoFont);
+            ageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
             commentArea = new JTextArea(2, 20); // Smaller comment area
             commentArea.setLineWrap(true);
             commentArea.setWrapStyleWord(true);
             JScrollPane commentScrollPane = new JScrollPane(commentArea);
 
+            // Create a white rectangular button and center it
             JButton saveButton = new JButton("Save Comment");
+            saveButton.setBackground(Color.WHITE);
+            saveButton.setFocusPainted(false);
+            saveButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+            detailsPanel.add(nameLabel);
+            detailsPanel.add(typeLabel);
+            detailsPanel.add(breedLabel);
+            detailsPanel.add(ageLabel);
+
+            detailsPanel.add(commentScrollPane); // Add comment area to detailsPanel
+            detailsPanel.add(saveButton); // Add button to detailsPanel
+
             saveButton.addActionListener(e -> {
                 String comment = commentArea.getText();
                 System.out.println("Comment for " + name + ": " + comment);
@@ -123,8 +153,6 @@ public class AnimalDisplayScreen extends JDialog {
             });
 
             add(detailsPanel);
-            add(commentScrollPane);
-            add(saveButton);
         }
     }
 }
