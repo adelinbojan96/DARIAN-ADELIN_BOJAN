@@ -1,24 +1,26 @@
+import javax.swing.ImageIcon;
 
-
-class Pet {
+public class Pet {
     private String name;
-    private String animal;
+    private String animalType;
     private String breed;
     private int age;
+    private byte[] image;
 
-    public Pet(String name, String animal, String breed, int age) {
+    public Pet(String name, String animalType, String breed, int age, byte[] image) {
         this.name = name;
-        this.animal = animal;
+        this.animalType = animalType;
         this.breed = breed;
         this.age = age;
+        this.image = image;
     }
 
     public String getName() {
         return name;
     }
-    public String getAnimal()
-    {
-        return animal;
+
+    public String getAnimalType() {
+        return animalType;
     }
 
     public String getBreed() {
@@ -29,13 +31,7 @@ class Pet {
         return age;
     }
 
-    @Override
-    public String toString() {
-        return "Pet{" +
-                "name='" + name + '\'' +
-                ", animal=" + animal +
-                ", breed='" + breed + '\'' +
-                ", age=" + age +
-                '}';
+    public ImageIcon getImageIcon() {
+        return (image != null) ? new ImageIcon(image) : null;
     }
 }

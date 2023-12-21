@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 import java.util.Objects;
-
 public class AnimalDisplayScreen extends JDialog {
     private JPanel mainPanel;
 
@@ -60,9 +59,10 @@ public class AnimalDisplayScreen extends JDialog {
                     int age = resultSet.getInt("age");
                     byte[] imageData = resultSet.getBytes("image");
 
-                    ImageIcon imageIcon = (imageData != null) ? new ImageIcon(imageData) : null;
+                    //ImageIcon imageIcon = (imageData != null) ? new ImageIcon(imageData) : null;
 
-                    AnimalPanel animalPanel = new AnimalPanel(name, animalType, breed, age, imageIcon);
+                    Pet pet = new Pet(name, animalType, breed, age, imageData);
+                    AnimalPanel animalPanel = new AnimalPanel(pet);
                     GridBagConstraints gbc = new GridBagConstraints();
                     gbc.gridx = animalCount % 3;  // Set to 3 for 3 columns per row
                     gbc.gridy = animalCount / 3;  // Set to 3 for 3 columns per row
@@ -80,17 +80,12 @@ public class AnimalDisplayScreen extends JDialog {
 
 
     private static class AnimalPanel extends JPanel {
-        private String name;
-        private String animalType;
-        private String breed;
-        private int age;
-        private JTextArea commentArea;
 
-        public AnimalPanel(String name, String animalType, String breed, int age, ImageIcon imageIcon) {
-            this.name = name;
-            this.animalType = animalType;
-            this.breed = breed;
-            this.age = age;
+        public AnimalPanel(Pet pet) {
+            String name = pet.getName();
+            String animalType = pet.getAnimalType();
+            String breed = pet.getBreed();
+            int age = pet.getAge();
 
             setLayout(new BorderLayout()); // Use BorderLayout for the main layout
 
@@ -100,11 +95,8 @@ public class AnimalDisplayScreen extends JDialog {
 
             ImageIcon placeholderIcon = createPlaceholderIcon(); // Create a placeholder ImageIcon
 
-            Image scaledImage;
-            if(imageIcon != null)
-                scaledImage = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_AREA_AVERAGING);
-            else
-                scaledImage = placeholderIcon.getImage().getScaledInstance(200, 200, Image.SCALE_AREA_AVERAGING);
+            ImageIcon imageIcon = pet.getImageIcon();
+            Image scaledImage = (imageIcon != null) ? imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_AREA_AVERAGING) : placeholderIcon.getImage().getScaledInstance(200, 200, Image.SCALE_AREA_AVERAGING);
 
             ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
             JLabel imageLabel = new JLabel(scaledImageIcon);
@@ -133,7 +125,7 @@ public class AnimalDisplayScreen extends JDialog {
             detailsPanel.add(breedLabel);
             detailsPanel.add(ageLabel);
 
-            commentArea = new JTextArea(2, 20);
+            JTextArea commentArea = new JTextArea(2, 20);
             commentArea.setLineWrap(true);
             commentArea.setWrapStyleWord(true);
             JScrollPane commentScrollPane = new JScrollPane(commentArea);
@@ -155,8 +147,7 @@ public class AnimalDisplayScreen extends JDialog {
 
         private ImageIcon createPlaceholderIcon() {
             // Create a placeholder image (you can customize this image)
-            ImageIcon placeholderIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("./placeHolder.png")));
-            return placeholderIcon;
+            return new ImageIcon(Objects.requireNonNull(getClass().getResource("./placeHolder.png")));
         }
 
     }
