@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
+import java.util.Objects;
 
 public class AnimalDisplayScreen extends JDialog {
     private JPanel mainPanel;
@@ -11,6 +12,7 @@ public class AnimalDisplayScreen extends JDialog {
 
         // Create a main panel with GridBagLayout
         mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBackground(Color.decode("#87abff"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -21,7 +23,7 @@ public class AnimalDisplayScreen extends JDialog {
         getContentPane().add(scrollPane);
 
         // Set size and make the dialog visible
-        setSize(1050, 600);
+        setSize(1340, 720);
         setLocationRelativeTo(parent);
 
         // Retrieve data from the database and display it
@@ -29,9 +31,15 @@ public class AnimalDisplayScreen extends JDialog {
 
         setVisible(true);
     }
+    public void displayAnimalDialog() {
+        // Retrieve data from the database and display it
+        displayAnimalData();
 
+        // Set the dialog visible
+        setVisible(true);
+    }
     private void displayAnimalData() {
-        // JDBC connection parameters
+        // JDBC connection parameters (unchanged)
         String url = "jdbc:postgresql://localhost:5432/pet";
         String username = "postgres";
         String password = "Bojanadelin11!";
@@ -56,8 +64,8 @@ public class AnimalDisplayScreen extends JDialog {
 
                     AnimalPanel animalPanel = new AnimalPanel(name, animalType, breed, age, imageIcon);
                     GridBagConstraints gbc = new GridBagConstraints();
-                    gbc.gridx = animalCount % 4;
-                    gbc.gridy = animalCount / 4;
+                    gbc.gridx = animalCount % 3;  // Set to 3 for 3 columns per row
+                    gbc.gridy = animalCount / 3;  // Set to 3 for 3 columns per row
                     gbc.insets = new Insets(10, 10, 10, 10); // Increase spacing
                     mainPanel.add(animalPanel, gbc);
 
@@ -69,6 +77,7 @@ public class AnimalDisplayScreen extends JDialog {
             JOptionPane.showMessageDialog(this, "Error retrieving data from the database.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
     private static class AnimalPanel extends JPanel {
         private String name;
@@ -83,25 +92,29 @@ public class AnimalDisplayScreen extends JDialog {
             this.breed = breed;
             this.age = age;
 
-            // Use a MatteBorder for thicker borders
-            setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
-            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            setLayout(new BorderLayout()); // Use BorderLayout for the main layout
 
-            if (imageIcon != null) {
-                // Set the size of the image to 200x200 or greater value
-                Image scaledImage = imageIcon.getImage().getScaledInstance(180, 180, Image.SCALE_AREA_AVERAGING);
-                ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
-                JLabel imageLabel = new JLabel(scaledImageIcon);
+            // Left panel for image
+            JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            leftPanel.setBackground(Color.decode("#fff2eb"));
 
-                // Create a thin frame around the image
-                imageLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            ImageIcon placeholderIcon = createPlaceholderIcon(); // Create a placeholder ImageIcon
 
-                // Center the image at the top
-                JPanel imagePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-                imagePanel.add(imageLabel);
+            Image scaledImage;
+            if(imageIcon != null)
+                scaledImage = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_AREA_AVERAGING);
+            else
+                scaledImage = placeholderIcon.getImage().getScaledInstance(200, 200, Image.SCALE_AREA_AVERAGING);
 
-                add(imagePanel);
-            }
+            ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
+            JLabel imageLabel = new JLabel(scaledImageIcon);
+            imageLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            leftPanel.add(imageLabel);
+
+            // Right panel for details
+            JPanel rightPanel = new JPanel();
+            rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+            rightPanel.setBackground(Color.decode("#fff2eb"));
 
             // Details panel with GridLayout to display details in independent rows
             JPanel detailsPanel = new JPanel(new GridLayout(0, 1));
@@ -110,49 +123,41 @@ public class AnimalDisplayScreen extends JDialog {
             JLabel breedLabel = new JLabel("Breed: " + breed);
             JLabel ageLabel = new JLabel("Age: " + age);
 
-            // Adjust spacing between labels
-            nameLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
-            typeLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
-            breedLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
-            ageLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
-
-            // Use Roboto font for labels with increased font size and center alignment
-            Font robotoFont = new Font("Roboto", Font.PLAIN, 18);
-            nameLabel.setFont(robotoFont);
-            nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            typeLabel.setFont(robotoFont);
-            typeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            breedLabel.setFont(robotoFont);
-            breedLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            ageLabel.setFont(robotoFont);
-            ageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-            commentArea = new JTextArea(2, 20); // Smaller comment area
-            commentArea.setLineWrap(true);
-            commentArea.setWrapStyleWord(true);
-            JScrollPane commentScrollPane = new JScrollPane(commentArea);
-
-            // Create a white rectangular button and center it
-            JButton saveButton = new JButton("Save Comment");
-            saveButton.setBackground(Color.WHITE);
-            saveButton.setFocusPainted(false);
-            saveButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            nameLabel.setFont(new Font("Roboto", Font.PLAIN, 17));
+            typeLabel.setFont(new Font("Roboto", Font.PLAIN, 17));
+            breedLabel.setFont(new Font("Roboto", Font.PLAIN, 17));
+            ageLabel.setFont(new Font("Roboto", Font.PLAIN, 17));
 
             detailsPanel.add(nameLabel);
             detailsPanel.add(typeLabel);
             detailsPanel.add(breedLabel);
             detailsPanel.add(ageLabel);
 
-            detailsPanel.add(commentScrollPane); // Add comment area to detailsPanel
-            detailsPanel.add(saveButton); // Add button to detailsPanel
+            commentArea = new JTextArea(2, 20);
+            commentArea.setLineWrap(true);
+            commentArea.setWrapStyleWord(true);
+            JScrollPane commentScrollPane = new JScrollPane(commentArea);
 
-            saveButton.addActionListener(e -> {
-                String comment = commentArea.getText();
-                System.out.println("Comment for " + name + ": " + comment);
-                JOptionPane.showMessageDialog(null, "Comment saved!");
-            });
+            JButton saveButton = new JButton("Save Comment");
+            saveButton.setBackground(Color.WHITE);
+            saveButton.setFocusPainted(false);
+            saveButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-            add(detailsPanel);
+            detailsPanel.add(commentScrollPane);
+            detailsPanel.add(saveButton);
+
+            rightPanel.add(detailsPanel);
+
+            // Add left and right panels to the main panel
+            add(leftPanel, BorderLayout.WEST);
+            add(rightPanel, BorderLayout.CENTER);
         }
+
+        private ImageIcon createPlaceholderIcon() {
+            // Create a placeholder image (you can customize this image)
+            ImageIcon placeholderIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("./placeHolder.png")));
+            return placeholderIcon;
+        }
+
     }
 }

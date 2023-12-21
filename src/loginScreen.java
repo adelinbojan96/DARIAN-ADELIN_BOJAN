@@ -16,7 +16,6 @@ public class loginScreen extends JDialog {
     private boolean loginSuccessful = true;
     public loginScreen(JFrame parent)
     {
-
         super(parent); //call the parent constructor which requires a JFrame
         setTitle("Enter a user account");
         setContentPane(loginPanel);
