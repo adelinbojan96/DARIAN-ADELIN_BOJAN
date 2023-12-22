@@ -130,7 +130,7 @@ public class AnimalDisplayScreen extends JDialog {
             commentArea.setWrapStyleWord(true);
             JScrollPane commentScrollPane = new JScrollPane(commentArea);
 
-            JButton saveButton = new JButton("Save Comment");
+            JButton saveButton = new JButton("Send Comment");
             saveButton.setBackground(Color.WHITE);
             saveButton.setFocusPainted(false);
             saveButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -151,4 +151,18 @@ public class AnimalDisplayScreen extends JDialog {
         }
 
     }
+    /*
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Animal Display Application");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(800, 600);
+
+            AnimalDisplayScreen animalDisplayScreen = new AnimalDisplayScreen(frame);
+            animalDisplayScreen.displayAnimalDialog();
+
+            frame.setVisible(true);
+        });
+    }
+    */
 }

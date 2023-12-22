@@ -7,15 +7,26 @@ public class VirtualDisplayPetAdoption implements ActionListener {
 
     static void demo()
     {
+        Adoption adoptionPlatform = new Adoption();
+        byte[] imageData = new byte[]{
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+        };
         // Adding some pets to the platform
-        //adoptionPlatform.addPet(new Pet("Buddy", "Dog","Labrador", 2));
-        //adoptionPlatform.addPet(new Pet("Mittens", "Cat", "Persian", 4));
-        //adoptionPlatform.addPet(new Pet("Whiskers", "Cat", "Siamese", 3));
-        //adoptionPlatform.addPet(new Pet("Nemo", "Fish", "Clownfish",1));
+        adoptionPlatform.addPet(new Pet("Buddy", "Dog","Labrador", 2, imageData));
+        adoptionPlatform.addPet(new Pet("Mittens", "Cat", "Persian", 4, imageData));
+        adoptionPlatform.addPet(new Pet("Whiskers", "Cat", "Siamese", 3, imageData));
+        adoptionPlatform.addPet(new Pet("Nemo", "Fish", "Clownfish",1, imageData));
 
         // Display available pets
-        //adoptionPlatform.displayAvailablePets();
-        /*
+        adoptionPlatform.displayAvailablePets();
+
         // Adopt a pet (it also deletes it)
         Pet adoptedPet = adoptionPlatform.adoptPet("Buddy");
         if (adoptedPet != null) {
@@ -23,15 +34,14 @@ public class VirtualDisplayPetAdoption implements ActionListener {
         } else {
             System.out.println("Sorry, the requested pet is not available for adoption.");
         }
-        */
+
         // Display updated available pets
+        adoptionPlatform.displayAvailablePets();
     }
     public static void main(String[] args) {
 
-        Adoption adoptionPlatform = new Adoption();
-        new loginScreen(null);
+        new LoginScreen(null);
         //demo();
-        adoptionPlatform.displayAvailablePets();
     }
 
     @Override
