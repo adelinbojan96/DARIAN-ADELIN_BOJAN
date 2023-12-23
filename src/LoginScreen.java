@@ -4,34 +4,43 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.*;
 
 public class LoginScreen extends JDialog {
     private JLabel icon;
     private JTextField usernameTextField;
     private JPasswordField passwordTextField;
+    private JButton loginButton;
+    private JPanel loginPanel;
     private JLabel username;
     private JLabel password;
-    private JButton loginButton;
-    private JLabel loginScreenText;
-    private JPanel loginPanel;
+    private JLabel goToRegisterText;
+    private JLabel orange;
     private boolean loginSuccessful = true;
     public LoginScreen(JFrame parent) {
         super(parent); // Call the parent constructor which requires a JFrame
-        setTitle("Enter a user account");
+        setTitle("Log into your account");
         setContentPane(loginPanel);
-        setMinimumSize(new Dimension(1050, 600));
+        setMinimumSize(new Dimension(1056, 738));
         setModal(true);
         setLocationRelativeTo(parent);
 
+        setBackgroundColor(Color.decode("#86D3A0"));
         // Customize the login button
         loginButton.setBackground(Color.WHITE);
         loginButton.setForeground(Color.BLACK);
         loginButton.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(Color.BLACK, 1, true), // Thin black border
-                new EmptyBorder(5, 50, 5, 50)          // Adjust the margin as needed
+                new LineBorder(Color.BLACK, 1, true),
+                new EmptyBorder(5, 20, 5, 20) // Adjusted the margin for the button
         ));
-        loginButton.setPreferredSize(new Dimension(200, loginButton.getPreferredSize().height)); // Width
+        loginButton.setPreferredSize(new Dimension(120, loginButton.getPreferredSize().height)); // Adjusted the width
+
+        // Set the width of usernameTextField and passwordTextField by setting the number of columns
+        usernameTextField.setColumns(15); // Adjusted the number of columns
+        passwordTextField.setColumns(15); // Adjusted the number of columns
+
 
         loginButton.addActionListener(e -> {
             validateLogin(parent);
@@ -45,10 +54,20 @@ public class LoginScreen extends JDialog {
         });
 
         // Move setVisible(true) to the end
+        goToRegisterText.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                //TODO: create link to RegisterScreen
+                dispose();
+                //go to RegisterScreen
+                new RegisterScreen(null);
+            }
+        });
         setVisible(true);
     }
 
-    public void validateLogin(JFrame parent) {
+    private void validateLogin(JFrame parent) {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
         // Assuming we have a connection to the database
@@ -76,7 +95,9 @@ public class LoginScreen extends JDialog {
     }
 
     private void createUIComponents() {
-        // TODO: place custom component creation code here
         icon.setSize(50, 50);
+    }
+    private void setBackgroundColor(Color color) {
+        loginPanel.setBackground(color);
     }
 }

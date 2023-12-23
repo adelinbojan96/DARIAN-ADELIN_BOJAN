@@ -147,7 +147,7 @@ public class AnimalDisplayScreen extends JDialog {
 
         private ImageIcon createPlaceholderIcon() {
             // Create a placeholder image (you can customize this image)
-            return new ImageIcon(Objects.requireNonNull(getClass().getResource("./placeHolder.png")));
+            return new ImageIcon(Objects.requireNonNull(getClass().getResource("./Pictures/placeHolder.png")));
         }
 
     }
