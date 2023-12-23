@@ -29,19 +29,10 @@ public class LoginScreen extends JDialog {
 
         setBackgroundColor(Color.decode("#86D3A0"));
         // Customize the login button
-        loginButton.setBackground(Color.WHITE);
-        loginButton.setForeground(Color.BLACK);
-        loginButton.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(Color.BLACK, 1, true),
-                new EmptyBorder(5, 20, 5, 20) // Adjusted the margin for the button
-        ));
-        loginButton.setPreferredSize(new Dimension(120, loginButton.getPreferredSize().height)); // Adjusted the width
-
-        // Set the width of usernameTextField and passwordTextField by setting the number of columns
-        usernameTextField.setColumns(15); // Adjusted the number of columns
-        passwordTextField.setColumns(15); // Adjusted the number of columns
-
-
+        customizeButton(loginButton);
+        // Customization in terms of appearance and number of columns the textFields
+        customizeTextField(usernameTextField);
+        customizeTextField(passwordTextField);
         loginButton.addActionListener(e -> {
             validateLogin(parent);
             if (loginSuccessful) {
@@ -66,7 +57,25 @@ public class LoginScreen extends JDialog {
         });
         setVisible(true);
     }
+    private void customizeButton(JButton button)
+    {
+        button.setBackground(Color.WHITE);
+        button.setForeground(Color.BLACK);
+        button.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(Color.BLACK, 1, true),
+                new EmptyBorder(5, 20, 5, 20) // Adjusted the margin for the button
+        ));
+        button.setPreferredSize(new Dimension(120, button.getPreferredSize().height)); // Adjusted the width
 
+    }
+    private void customizeTextField(JTextField textField) {
+        textField.setColumns(20);
+        textField.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(Color.BLACK, 1, true),
+                new EmptyBorder(5, 10, 5, 10)
+        ));
+        textField.setFont(new Font("Roboto", Font.PLAIN, 16));
+    }
     private void validateLogin(JFrame parent) {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
