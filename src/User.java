@@ -1,5 +1,8 @@
+import javax.swing.*;
+
 public class User {
     private static User currentUser;  // static field to store the current user
+    private byte[] image;
     private int id;
 
     private String username;
@@ -8,12 +11,13 @@ public class User {
     private String phone;
 
     // private constructor to prevent direct instantiation
-    public User(int id, String username, String password, String email, String phone) {
+    public User(int id, String username, String password, String email, String phone, byte[] image) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.phone = phone;
+        this.image = image;
     }
 
     // public method to get the current user
@@ -57,8 +61,11 @@ public class User {
     public String getPhone() {
         return phone;
     }
+    public ImageIcon getImageIcon() {
+        return (image != null) ? new ImageIcon(image) : null;
+    }
     // Factory method to create a new user instance
-    public static User createUser(int id, String username, String password, String email, String phone) {
-        return new User(id, username, password, email, phone);
+    public static User createUser(int id, String username, String password, String email, String phone, byte[] image) {
+        return new User(id, username, password, email, phone, image);
     }
 }

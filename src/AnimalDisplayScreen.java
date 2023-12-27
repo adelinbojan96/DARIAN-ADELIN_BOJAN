@@ -33,7 +33,6 @@ public class AnimalDisplayScreen extends JDialog {
         profilePanel.setBackground(Color.decode("#87abff"));
 
         // Create labels to display user information
-        //todo: create a new class to edit profile
         JLabel nameLabel = new JLabel("user: " + (User.isLoggedIn() ? User.getCurrentUser().getUsername() : "guest"));
         Font labelFont = new Font("Roboto thin", Font.PLAIN, 15);
         nameLabel.setFont(labelFont);
@@ -44,7 +43,12 @@ public class AnimalDisplayScreen extends JDialog {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //TODO: create a new class in which we display all the profile info
-                System.out.println("Profile clicked!");
+                super.mouseClicked(e);;
+                SwingUtilities.invokeLater(() -> {
+                    Profile profileDialog = new Profile(null);
+                    profileDialog.setVisible(true);
+                });
+                dispose();
             }
         });
 
@@ -55,7 +59,7 @@ public class AnimalDisplayScreen extends JDialog {
         getContentPane().add(profilePanel, BorderLayout.NORTH);
 
         // Set size and make the dialog visible
-        setSize(1340, 720);
+        setSize(1280, 720);
         setLocationRelativeTo(parent);
 
         // Retrieve data from the database and display it

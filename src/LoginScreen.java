@@ -51,7 +51,6 @@ public class LoginScreen extends JDialog {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                //TODO: create link to RegisterScreen
                 dispose();
                 //go to RegisterScreen
                 new RegisterScreen(null);
@@ -100,7 +99,8 @@ public class LoginScreen extends JDialog {
                             resultSet.getString("username"),
                             resultSet.getString("password"),
                             resultSet.getString("email"),
-                            resultSet.getString("phone_number")
+                            resultSet.getString("phone_number"),
+                            null
                     );
                     User.setCurrentUser(loggedInUser);
 

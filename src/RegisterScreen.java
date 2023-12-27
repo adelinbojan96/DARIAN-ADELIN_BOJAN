@@ -86,7 +86,7 @@ public class RegisterScreen extends JDialog {
         String email = mailTextField.getText();
         String number = phoneTextField.getText();
 
-        //use db.properties file to access database
+        // Use db.properties file to access database
         DatabaseManager databaseManager = new DatabaseManager();
         // Assuming we have a connection to the database
         try (Connection connection = databaseManager.getConnection()) {
@@ -133,7 +133,8 @@ public class RegisterScreen extends JDialog {
                                             username,
                                             password,
                                             email,
-                                            number
+                                            number,
+                                            null
                                     );
                                     User.setCurrentUser(loggedInUser);
                                     //Registration successful
