@@ -6,7 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.InputStream;
 import java.sql.*;
+import java.util.Properties;
 
 public class RegisterScreen extends JDialog {
     private JPanel registerPanel;
@@ -83,8 +85,11 @@ public class RegisterScreen extends JDialog {
         String password = passwordTextField.getText();
         String email = mailTextField.getText();
         String number = phoneTextField.getText();
+
+        //use db.properties file to access database
+        DatabaseManager databaseManager = new DatabaseManager();
         // Assuming we have a connection to the database
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pet", "postgres", "Bojanadelin11!")) {
+        try (Connection connection = databaseManager.getConnection()) {
             // Check if the user exists
             String sqlQuery = "SELECT * FROM users WHERE username = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
@@ -121,10 +126,22 @@ public class RegisterScreen extends JDialog {
                                 // Execute the insert query
                                 int rowsAffected = insertStatement.executeUpdate();
 
-                                //if (rowsAffected > 0) {
-                                // Registration successful
-                                //registerSuccessful = true;
-                                registerSuccessful = rowsAffected > 0;
+                                if (rowsAffected > 0) {
+                                    // User exists and passwords match, login successful
+                                    User loggedInUser = User.createUser(
+                                            newIdUser,
+                                            username,
+                                            password,
+                                            email,
+                                            number
+                                    );
+                                    User.setCurrentUser(loggedInUser);
+                                    //Registration successful
+                                    registerSuccessful = true;
+                                }
+                                else
+                                    registerSuccessful = false;
+
                             }
                         }
                         catch(SQLException e)

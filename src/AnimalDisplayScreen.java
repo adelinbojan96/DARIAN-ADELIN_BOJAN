@@ -1,9 +1,15 @@
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.*;
 import java.util.Objects;
+
 public class AnimalDisplayScreen extends JDialog {
     private JPanel mainPanel;
+    private JPanel profile;
+    private JPanel profilePanel;  // New panel for user information
 
     public AnimalDisplayScreen(JFrame parent) {
         super(parent, "Animal Display", true);
@@ -20,6 +26,33 @@ public class AnimalDisplayScreen extends JDialog {
 
         // Add the scroll pane to the content pane
         getContentPane().add(scrollPane);
+
+        // Create the panel for user information
+        profilePanel = new JPanel();
+        profilePanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        profilePanel.setBackground(Color.decode("#87abff"));
+
+        // Create labels to display user information
+        //todo: create a new class to edit profile
+        JLabel nameLabel = new JLabel("user: " + (User.isLoggedIn() ? User.getCurrentUser().getUsername() : "guest"));
+        Font labelFont = new Font("Roboto thin", Font.PLAIN, 15);
+        nameLabel.setFont(labelFont);
+        profilePanel.add(nameLabel);
+
+        //Action listener for accessing profile
+        nameLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //TODO: create a new class in which we display all the profile info
+                System.out.println("Profile clicked!");
+            }
+        });
+
+        // Make an invisible border
+        Border emptyBorder = BorderFactory.createLineBorder(Color.decode("#87abff"),5);
+        profilePanel.setBorder(emptyBorder);
+        // Add the user information panel to the content pane
+        getContentPane().add(profilePanel, BorderLayout.NORTH);
 
         // Set size and make the dialog visible
         setSize(1340, 720);
@@ -39,11 +72,8 @@ public class AnimalDisplayScreen extends JDialog {
     }
     private void displayAnimalData() {
         // JDBC connection parameters (unchanged)
-        String url = "jdbc:postgresql://localhost:5432/pet";
-        String username = "postgres";
-        String password = "Bojanadelin11!";
-
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+        DatabaseManager databaseManager = new DatabaseManager();
+        try (Connection connection = databaseManager.getConnection()) {
             // Create and execute the SQL query
             String query = "SELECT name, animal_type, breed, age, image FROM pet";
             try (Statement statement = connection.createStatement();
@@ -58,8 +88,6 @@ public class AnimalDisplayScreen extends JDialog {
                     String breed = resultSet.getString("breed");
                     int age = resultSet.getInt("age");
                     byte[] imageData = resultSet.getBytes("image");
-
-                    //ImageIcon imageIcon = (imageData != null) ? new ImageIcon(imageData) : null;
 
                     Pet pet = new Pet(name, animalType, breed, age, imageData);
                     AnimalPanel animalPanel = new AnimalPanel(pet);
@@ -89,51 +117,67 @@ public class AnimalDisplayScreen extends JDialog {
 
             setLayout(new BorderLayout()); // Use BorderLayout for the main layout
 
+            Color backgroundColor = Color.white;
             // Left panel for image
             JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-            leftPanel.setBackground(Color.decode("#fff2eb"));
+            leftPanel.setBackground(backgroundColor);
 
             ImageIcon placeholderIcon = createPlaceholderIcon(); // Create a placeholder ImageIcon
 
             ImageIcon imageIcon = pet.getImageIcon();
-            Image scaledImage = (imageIcon != null) ? imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_AREA_AVERAGING) : placeholderIcon.getImage().getScaledInstance(200, 200, Image.SCALE_AREA_AVERAGING);
+            Image scaledImage = (imageIcon != null) ?
+                    imageIcon.getImage().getScaledInstance(180, 180, Image.SCALE_AREA_AVERAGING) :
+                    placeholderIcon.getImage().getScaledInstance(180, 180, Image.SCALE_AREA_AVERAGING);
 
             ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
             JLabel imageLabel = new JLabel(scaledImageIcon);
-            imageLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            Border blackBorder = BorderFactory.createLineBorder(Color.BLACK, 3); // Created thickness
+            imageLabel.setBorder(BorderFactory.createCompoundBorder(blackBorder, BorderFactory.createEmptyBorder(-1, -1, -1, -1))); // Add an empty border for additional spacing
             leftPanel.add(imageLabel);
+
+            imageLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    //TODO: create a new class in which we display all the info about the pet
+                    System.out.println("Pet clicked!");
+                }
+            });
 
             // Right panel for details
             JPanel rightPanel = new JPanel();
             rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-            rightPanel.setBackground(Color.decode("#fff2eb"));
 
             // Details panel with GridLayout to display details in independent rows
             JPanel detailsPanel = new JPanel(new GridLayout(0, 1));
-            JLabel nameLabel = new JLabel("Name: " + name);
+            detailsPanel.setBackground(backgroundColor);
+            JLabel nameLabel = new JLabel(name);
             JLabel typeLabel = new JLabel("Type: " + animalType);
             JLabel breedLabel = new JLabel("Breed: " + breed);
             JLabel ageLabel = new JLabel("Age: " + age);
 
-            nameLabel.setFont(new Font("Roboto", Font.PLAIN, 17));
-            typeLabel.setFont(new Font("Roboto", Font.PLAIN, 17));
-            breedLabel.setFont(new Font("Roboto", Font.PLAIN, 17));
-            ageLabel.setFont(new Font("Roboto", Font.PLAIN, 17));
+            nameLabel.setFont(new Font("Roboto Light", Font.PLAIN, 21));
+            typeLabel.setFont(new Font("Roboto Thin", Font.ITALIC, 14));
+            breedLabel.setFont(new Font("Roboto Thin", Font.ITALIC, 14));
+            ageLabel.setFont(new Font("Roboto Thin", Font.ITALIC, 14));
 
             detailsPanel.add(nameLabel);
             detailsPanel.add(typeLabel);
             detailsPanel.add(breedLabel);
             detailsPanel.add(ageLabel);
 
+            //TODO: create an action listener for the Button and make the current user associate the message with corresponding pet
             JTextArea commentArea = new JTextArea(2, 20);
             commentArea.setLineWrap(true);
             commentArea.setWrapStyleWord(true);
+            commentArea.setFont(new Font("Roboto Light", Font.PLAIN, 11));
             JScrollPane commentScrollPane = new JScrollPane(commentArea);
 
             JButton saveButton = new JButton("Send Comment");
             saveButton.setBackground(Color.WHITE);
             saveButton.setFocusPainted(false);
             saveButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            saveButton.setFont(new Font("Roboto Light", Font.BOLD, 11));
+            saveButton.setPreferredSize(new Dimension(60, 20));
 
             detailsPanel.add(commentScrollPane);
             detailsPanel.add(saveButton);
@@ -146,12 +190,12 @@ public class AnimalDisplayScreen extends JDialog {
         }
 
         private ImageIcon createPlaceholderIcon() {
-            // Create a placeholder image (you can customize this image)
+            // Create a placeholder image
             return new ImageIcon(Objects.requireNonNull(getClass().getResource("./Pictures/placeHolder.png")));
         }
 
     }
-    /*
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Animal Display Application");
@@ -164,5 +208,5 @@ public class AnimalDisplayScreen extends JDialog {
             frame.setVisible(true);
         });
     }
-    */
+
 }

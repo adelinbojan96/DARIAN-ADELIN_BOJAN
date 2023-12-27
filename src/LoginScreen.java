@@ -6,7 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.InputStream;
 import java.sql.*;
+import java.util.Properties;
 
 public class LoginScreen extends JDialog {
     private JLabel icon;
@@ -79,8 +81,12 @@ public class LoginScreen extends JDialog {
     private void validateLogin(JFrame parent) {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
+
+        //use db.properties file to access database
+        DatabaseManager databaseManager = new DatabaseManager();
+
         // Assuming we have a connection to the database
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pet", "postgres", "Bojanadelin11!")) {
+        try (Connection connection = databaseManager.getConnection()) {
             // Check if the user exists
             String sqlQuery = "SELECT * FROM users WHERE username = ? AND password = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
@@ -89,6 +95,15 @@ public class LoginScreen extends JDialog {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {
                     // User exists and passwords match, login successful
+                    User loggedInUser = User.createUser(
+                            resultSet.getInt("id_user"),
+                            resultSet.getString("username"),
+                            resultSet.getString("password"),
+                            resultSet.getString("email"),
+                            resultSet.getString("phone_number")
+                    );
+                    User.setCurrentUser(loggedInUser);
+
                     JOptionPane.showMessageDialog(parent, "You have successfully logged in.");
                     loginSuccessful = true;
                 } else {
