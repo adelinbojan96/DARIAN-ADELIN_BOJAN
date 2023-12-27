@@ -101,7 +101,7 @@
             </constraints>
             <properties>
               <font name="Roboto Light" size="20" style="0"/>
-              <text value="E-mail(optional)"/>
+              <text value="E-mail"/>
             </properties>
           </component>
           <component id="c38af" class="javax.swing.JLabel" binding="goToLoginText">

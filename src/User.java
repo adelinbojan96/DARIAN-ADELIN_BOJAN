@@ -64,6 +64,11 @@ public class User {
     public ImageIcon getImageIcon() {
         return (image != null) ? new ImageIcon(image) : null;
     }
+
+    public byte[] getImage() {
+        return (image != null) ? image : null;
+    }
+
     // Factory method to create a new user instance
     public static User createUser(int id, String username, String password, String email, String phone, byte[] image) {
         return new User(id, username, password, email, phone, image);

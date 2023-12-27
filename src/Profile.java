@@ -25,14 +25,15 @@ public class Profile extends JDialog {
     private JLabel goToAnimalDisplayScreen;
     private JPanel profilePanel;
     private JLabel goToLoginScreen;
+    private JLabel passwordProfile;
 
     public Profile(JFrame parent) {
         super(parent); // Call the parent constructor which requires a JFrame
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        setTitle("Edit your profile");
+        setTitle("Your current profile");
         setContentPane(profilePanel);
-        setMinimumSize(new Dimension(517, 507));
+        setMinimumSize(new Dimension(517, 527));
         setModal(true);
         setLocationRelativeTo(parent);
 
@@ -103,6 +104,13 @@ public class Profile extends JDialog {
                 new LoginScreen(null);
             }
         });
+        buttonEdit.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                EditProfile editProfileDialog = new EditProfile(null);
+                editProfileDialog.setVisible(true);
+            });
+            dispose();
+        });
     }
 
     private void updateUserImageInDatabase(int id, byte[] imageData, JFrame parent) {
@@ -159,13 +167,27 @@ public class Profile extends JDialog {
         // Check if the user is logged in
         if (User.isLoggedIn()) {
             // Set user information using database or sample data
+            int numberOfLettersPassword = User.getCurrentUser().getPassword().length();
+            String maskedPassword = "*".repeat(numberOfLettersPassword);
             usernameProfile.setText("User: " + User.getCurrentUser().getUsername());
+            passwordProfile.setText("Password: " +  maskedPassword);
             emailProfile.setText("Email: " + User.getCurrentUser().getEmail());
             phoneProfile.setText("Phone number: " + User.getCurrentUser().getPhone());
             //If not null, we display it
             ImageIcon imageIcon = User.getCurrentUser().getImageIcon();
             if(imageIcon != null)
-                profileImage.setIcon(imageIcon);
+            {
+                // Resize the image
+                Image originalImage = imageIcon.getImage();
+                Image resizedImage = originalImage.getScaledInstance(240, 180, Image.SCALE_SMOOTH);
+                profileImage.setIcon(new ImageIcon(resizedImage));
+            }
+
+            // Update the user
+            User user = User.createUser(User.getCurrentUser().getId(), User.getCurrentUser().getUsername(),
+                    User.getCurrentUser().getPassword(), User.getCurrentUser().getEmail(),
+                    User.getCurrentUser().getPhone(), retrieveImageDataFromDatabase(User.getCurrentUser().getId()));
+            User.setCurrentUser(user);
         } else {
             // Set default or sample data if the user is not logged in
             usernameProfile.setText("User: Guest");
@@ -200,14 +222,5 @@ public class Profile extends JDialog {
         Image resizedImage = originalImage.getScaledInstance(240, 180, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);
     }
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Main Frame");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-            // Instantiate Profile class and make it visible
-            Profile profileDialog = new Profile(frame);
-            profileDialog.setVisible(true);
-        });
-    }
 }

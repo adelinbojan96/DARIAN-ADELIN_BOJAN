@@ -34,7 +34,7 @@ public class AnimalDisplayScreen extends JDialog {
 
         // Create labels to display user information
         JLabel nameLabel = new JLabel("user: " + (User.isLoggedIn() ? User.getCurrentUser().getUsername() : "guest"));
-        Font labelFont = new Font("Roboto thin", Font.PLAIN, 15);
+        Font labelFont = new Font("Roboto Thin", Font.PLAIN, 15);
         nameLabel.setFont(labelFont);
         profilePanel.add(nameLabel);
 
@@ -42,7 +42,6 @@ public class AnimalDisplayScreen extends JDialog {
         nameLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                //TODO: create a new class in which we display all the profile info
                 super.mouseClicked(e);;
                 SwingUtilities.invokeLater(() -> {
                     Profile profileDialog = new Profile(null);
@@ -59,7 +58,7 @@ public class AnimalDisplayScreen extends JDialog {
         getContentPane().add(profilePanel, BorderLayout.NORTH);
 
         // Set size and make the dialog visible
-        setSize(1280, 720);
+        setSize(1240, 720);
         setLocationRelativeTo(parent);
 
         // Retrieve data from the database and display it
@@ -198,19 +197,6 @@ public class AnimalDisplayScreen extends JDialog {
             return new ImageIcon(Objects.requireNonNull(getClass().getResource("./Pictures/placeHolder.png")));
         }
 
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Animal Display Application");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(800, 600);
-
-            AnimalDisplayScreen animalDisplayScreen = new AnimalDisplayScreen(frame);
-            animalDisplayScreen.displayAnimalDialog();
-
-            frame.setVisible(true);
-        });
     }
 
 }

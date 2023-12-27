@@ -38,9 +38,6 @@ public class LoginScreen extends JDialog {
         loginButton.addActionListener(e -> {
             validateLogin(parent);
             if (loginSuccessful) {
-                // System.out.print("Here I am trying to get to another window");
-                // Go to new tab.
-                // Create a separate class for this, where I use class message, class user, and class Pet.
                 dispose();
                 new AnimalDisplayScreen(null);
             }
@@ -52,7 +49,6 @@ public class LoginScreen extends JDialog {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 dispose();
-                //go to RegisterScreen
                 new RegisterScreen(null);
             }
         });
@@ -81,7 +77,7 @@ public class LoginScreen extends JDialog {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
-        //use db.properties file to access database
+        // Use db.properties file to access database
         DatabaseManager databaseManager = new DatabaseManager();
 
         // Assuming we have a connection to the database
@@ -118,9 +114,6 @@ public class LoginScreen extends JDialog {
         }
     }
 
-    private void createUIComponents() {
-        icon.setSize(50, 50);
-    }
     private void setBackgroundColor(Color color) {
         loginPanel.setBackground(color);
     }

@@ -101,7 +101,7 @@ public class RegisterScreen extends JDialog {
                     registerSuccessful = false;
                 } else {
                     // User does not exist, it is good news
-                    if(!password.isEmpty())
+                    if(!password.isEmpty() && !email.isEmpty())
                     {
                         String maxIdQuery = "SELECT MAX(id_user) AS highest_id_user FROM users";
                         try (PreparedStatement maxIdStatement = connection.prepareStatement(maxIdQuery))
@@ -162,7 +162,7 @@ public class RegisterScreen extends JDialog {
                     }
                     else
                     {
-                        JOptionPane.showMessageDialog(parent, "Please provide username and password");
+                        JOptionPane.showMessageDialog(parent, "Please provide username, password and e-mail address");
                         registerSuccessful = false;
                     }
 
