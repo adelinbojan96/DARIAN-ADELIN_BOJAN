@@ -142,7 +142,6 @@ public class RegisterScreen extends JDialog {
                                 }
                                 else
                                     registerSuccessful = false;
-
                             }
                         }
                         catch(SQLException e)

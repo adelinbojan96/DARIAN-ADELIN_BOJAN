@@ -19,10 +19,10 @@ public class VirtualDisplayPetAdoption implements ActionListener {
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
         };
         // Adding some pets to the platform
-        adoptionPlatform.addPet(new Pet("Buddy", "Dog","Labrador", 2, imageData));
-        adoptionPlatform.addPet(new Pet("Mittens", "Cat", "Persian", 4, imageData));
-        adoptionPlatform.addPet(new Pet("Whiskers", "Cat", "Siamese", 3, imageData));
-        adoptionPlatform.addPet(new Pet("Nemo", "Fish", "Clownfish",1, imageData));
+        adoptionPlatform.addPet(new Pet(1,"Buddy", "Dog","Labrador", 2, imageData));
+        adoptionPlatform.addPet(new Pet(2, "Mittens", "Cat", "Persian", 4, imageData));
+        adoptionPlatform.addPet(new Pet(3, "Whiskers", "Cat", "Siamese", 3, imageData));
+        adoptionPlatform.addPet(new Pet(4, "Nemo", "Fish", "Clownfish",1, imageData));
 
         // Display available pets
         adoptionPlatform.displayAvailablePets();

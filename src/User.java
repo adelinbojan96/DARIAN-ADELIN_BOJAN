@@ -1,24 +1,8 @@
 import javax.swing.*;
 
-public class User {
+public record User(int id, String username, String password, String email, String phone, byte[] image) {
     private static User currentUser;  // static field to store the current user
-    private byte[] image;
-    private int id;
-
-    private String username;
-    private String password;
-    private String email;
-    private String phone;
-
     // private constructor to prevent direct instantiation
-    public User(int id, String username, String password, String email, String phone, byte[] image) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.phone = phone;
-        this.image = image;
-    }
 
     // public method to get the current user
     public static User getCurrentUser() {
@@ -41,32 +25,13 @@ public class User {
     }
 
     // Getter methods for user attributes
-
-    public int getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
     public ImageIcon getImageIcon() {
         return (image != null) ? new ImageIcon(image) : null;
     }
 
-    public byte[] getImage() {
-        return (image != null) ? image : null;
+    @Override
+    public byte[] image() {
+        return image;
     }
 
     // Factory method to create a new user instance

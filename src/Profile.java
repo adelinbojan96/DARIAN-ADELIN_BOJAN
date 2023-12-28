@@ -3,8 +3,6 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -45,7 +43,7 @@ public class Profile extends JDialog {
         if(User.isLoggedIn())
         {
             // Retrieve the image data from the database
-            byte[] imageData = retrieveImageDataFromDatabase(User.getCurrentUser().getId());
+            byte[] imageData = retrieveImageDataFromDatabase(User.getCurrentUser().id());
 
             // If the image data is not null, update the profileImage
             if (imageData != null)
@@ -87,7 +85,7 @@ public class Profile extends JDialog {
                     profileImage.setIcon(resizeImage(imageData));
 
                     // Update the pet's image in the database
-                    updateUserImageInDatabase(User.getCurrentUser().getId(), imageData, parent);
+                    updateUserImageInDatabase(User.getCurrentUser().id(), imageData, parent);
 
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -99,9 +97,11 @@ public class Profile extends JDialog {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                dispose();
-                //go to LoginScreen
+
+                //go to LoginScreen and log out the current user
+                User.logout();
                 new LoginScreen(null);
+                dispose();
             }
         });
         buttonEdit.addActionListener(e -> {
@@ -167,12 +167,12 @@ public class Profile extends JDialog {
         // Check if the user is logged in
         if (User.isLoggedIn()) {
             // Set user information using database or sample data
-            int numberOfLettersPassword = User.getCurrentUser().getPassword().length();
+            int numberOfLettersPassword = User.getCurrentUser().password().length();
             String maskedPassword = "*".repeat(numberOfLettersPassword);
-            usernameProfile.setText("User: " + User.getCurrentUser().getUsername());
+            usernameProfile.setText("User: " + User.getCurrentUser().username());
             passwordProfile.setText("Password: " +  maskedPassword);
-            emailProfile.setText("Email: " + User.getCurrentUser().getEmail());
-            phoneProfile.setText("Phone number: " + User.getCurrentUser().getPhone());
+            emailProfile.setText("Email: " + User.getCurrentUser().email());
+            phoneProfile.setText("Phone number: " + User.getCurrentUser().phone());
             //If not null, we display it
             ImageIcon imageIcon = User.getCurrentUser().getImageIcon();
             if(imageIcon != null)
@@ -184,9 +184,9 @@ public class Profile extends JDialog {
             }
 
             // Update the user
-            User user = User.createUser(User.getCurrentUser().getId(), User.getCurrentUser().getUsername(),
-                    User.getCurrentUser().getPassword(), User.getCurrentUser().getEmail(),
-                    User.getCurrentUser().getPhone(), retrieveImageDataFromDatabase(User.getCurrentUser().getId()));
+            User user = User.createUser(User.getCurrentUser().id(), User.getCurrentUser().username(),
+                    User.getCurrentUser().password(), User.getCurrentUser().email(),
+                    User.getCurrentUser().phone(), retrieveImageDataFromDatabase(User.getCurrentUser().id()));
             User.setCurrentUser(user);
         } else {
             // Set default or sample data if the user is not logged in
@@ -216,9 +216,9 @@ public class Profile extends JDialog {
     }
     private ImageIcon resizeImage(byte[] imageData)
     {
+        // Resize the image
         ImageIcon imageIcon = new ImageIcon(imageData);
         Image originalImage = imageIcon.getImage();
-        // Resize the image
         Image resizedImage = originalImage.getScaledInstance(240, 180, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);
     }

@@ -1,8 +1,6 @@
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
@@ -52,7 +50,7 @@ public class EditProfile extends JDialog{
                 String newPassword = passwordTextField.getText();
                 String newEmail = emailTextField.getText();
                 String newPhone = phoneTextField.getText();
-                updateUserSettingsInDatabase(User.getCurrentUser().getId(), newUsername, newPassword, newEmail, newPhone, parent);
+                updateUserSettingsInDatabase(User.getCurrentUser().id(), newUsername, newPassword, newEmail, newPhone, parent);
             }
         });
         goToProfile.addMouseListener(new MouseAdapter() {
@@ -83,10 +81,10 @@ public class EditProfile extends JDialog{
                     String updateQuery = "UPDATE users SET username = ?, password = ?, email = ?, phone_number = ?  WHERE id_user = ?";
                     try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
                         //We check what to update in the database
-                        String username = (!newUsername.isEmpty()) ? newUsername : User.getCurrentUser().getUsername();
-                        String password = (!newPassword.isEmpty()) ? newPassword : User.getCurrentUser().getPassword();
-                        String email = (!newEmail.isEmpty()) ? newEmail : User.getCurrentUser().getEmail();
-                        String phone = (!newPhone.isEmpty()) ? newPhone : User.getCurrentUser().getPhone();
+                        String username = (!newUsername.isEmpty()) ? newUsername : User.getCurrentUser().username();
+                        String password = (!newPassword.isEmpty()) ? newPassword : User.getCurrentUser().password();
+                        String email = (!newEmail.isEmpty()) ? newEmail : User.getCurrentUser().email();
+                        String phone = (!newPhone.isEmpty()) ? newPhone : User.getCurrentUser().phone();
 
                         updateStatement.setString(1, username);
                         updateStatement.setString(2, password);
@@ -100,7 +98,7 @@ public class EditProfile extends JDialog{
                         if (rowsAffected > 0) {
                             // Image update successful
                             JOptionPane.showMessageDialog(parent, "Edits were successful");
-                            User user = User.createUser(id, username, password, email, phone, User.getCurrentUser().getImage());
+                            User user = User.createUser(id, username, password, email, phone, User.getCurrentUser().image());
                             User.setCurrentUser(user);
 
                             SwingUtilities.invokeLater(() -> {

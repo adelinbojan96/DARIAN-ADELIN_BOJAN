@@ -1,13 +1,15 @@
 import javax.swing.ImageIcon;
 
 public class Pet {
-    private String name;
-    private String animalType;
-    private String breed;
-    private int age;
-    private byte[] image;
+    private final int id_pet;
+    private final String name;
+    private final String animalType;
+    private final String breed;
+    private final int age;
+    private final byte[] image;
 
-    public Pet(String name, String animalType, String breed, int age, byte[] image) {
+    public Pet(int id_pet, String name, String animalType, String breed, int age, byte[] image) {
+        this.id_pet = id_pet;
         this.name = name;
         this.animalType = animalType;
         this.breed = breed;
@@ -15,6 +17,7 @@ public class Pet {
         this.image = image;
     }
 
+    public int getId(){return id_pet;}
     public String getName() {
         return name;
     }

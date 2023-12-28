@@ -33,7 +33,7 @@ public class AnimalDisplayScreen extends JDialog {
         profilePanel.setBackground(Color.decode("#87abff"));
 
         // Create labels to display user information
-        JLabel nameLabel = new JLabel("user: " + (User.isLoggedIn() ? User.getCurrentUser().getUsername() : "guest"));
+        JLabel nameLabel = new JLabel("user: " + (User.isLoggedIn() ? User.getCurrentUser().username() : "guest"));
         Font labelFont = new Font("Roboto Thin", Font.PLAIN, 15);
         nameLabel.setFont(labelFont);
         profilePanel.add(nameLabel);
@@ -42,7 +42,7 @@ public class AnimalDisplayScreen extends JDialog {
         nameLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);;
+                super.mouseClicked(e);
                 SwingUtilities.invokeLater(() -> {
                     Profile profileDialog = new Profile(null);
                     profileDialog.setVisible(true);
@@ -63,14 +63,6 @@ public class AnimalDisplayScreen extends JDialog {
 
         // Retrieve data from the database and display it
         displayAnimalData();
-
-        setVisible(true);
-    }
-    public void displayAnimalDialog() {
-        // Retrieve data from the database and display it
-        displayAnimalData();
-
-        // Set the dialog visible
         setVisible(true);
     }
     private void displayAnimalData() {
@@ -78,7 +70,7 @@ public class AnimalDisplayScreen extends JDialog {
         DatabaseManager databaseManager = new DatabaseManager();
         try (Connection connection = databaseManager.getConnection()) {
             // Create and execute the SQL query
-            String query = "SELECT name, animal_type, breed, age, image FROM pet";
+            String query = "SELECT id_pet, name, animal_type, breed, age, image FROM pet";
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(query)) {
 
@@ -86,13 +78,14 @@ public class AnimalDisplayScreen extends JDialog {
 
                 // Iterate through the result set and add a custom AnimalPanel for each entry
                 while (resultSet.next()) {
+                    int id = resultSet.getInt("id_pet");
                     String name = resultSet.getString("name");
                     String animalType = resultSet.getString("animal_type");
                     String breed = resultSet.getString("breed");
                     int age = resultSet.getInt("age");
                     byte[] imageData = resultSet.getBytes("image");
 
-                    Pet pet = new Pet(name, animalType, breed, age, imageData);
+                    Pet pet = new Pet(id, name, animalType, breed, age, imageData);
                     AnimalPanel animalPanel = new AnimalPanel(pet);
                     GridBagConstraints gbc = new GridBagConstraints();
                     gbc.gridx = animalCount % 3;  // Set to 3 for 3 columns per row
@@ -110,7 +103,7 @@ public class AnimalDisplayScreen extends JDialog {
     }
 
 
-    private static class AnimalPanel extends JPanel {
+    private class AnimalPanel extends JPanel {
 
         public AnimalPanel(Pet pet) {
             String name = pet.getName();
@@ -141,8 +134,7 @@ public class AnimalDisplayScreen extends JDialog {
             imageLabel.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    //TODO: create a new class in which we display all the info about the pet
-                    System.out.println("Pet clicked!");
+                    new InfoPet(pet, null);
                 }
             });
 
@@ -168,7 +160,6 @@ public class AnimalDisplayScreen extends JDialog {
             detailsPanel.add(breedLabel);
             detailsPanel.add(ageLabel);
 
-            //TODO: create an action listener for the Button and make the current user associate the message with corresponding pet
             JTextArea commentArea = new JTextArea(2, 20);
             commentArea.setLineWrap(true);
             commentArea.setWrapStyleWord(true);
@@ -187,6 +178,16 @@ public class AnimalDisplayScreen extends JDialog {
 
             rightPanel.add(detailsPanel);
 
+            saveButton.addActionListener(e -> {
+                String commentText = commentArea.getText();
+                if (!commentText.isEmpty()) {
+                    // Call the insertMessage method to insert the comment into the database
+                    insertMessage(commentText, pet, AnimalDisplayScreen.this);
+                } else {
+                    // Show a message if the comment text is empty
+                    JOptionPane.showMessageDialog(AnimalDisplayScreen.this, "Please enter a comment before sending.");
+                }
+            });
             // Add left and right panels to the main panel
             add(leftPanel, BorderLayout.WEST);
             add(rightPanel, BorderLayout.CENTER);
@@ -196,7 +197,57 @@ public class AnimalDisplayScreen extends JDialog {
             // Create a placeholder image
             return new ImageIcon(Objects.requireNonNull(getClass().getResource("./Pictures/placeHolder.png")));
         }
+        private void insertMessage(String text, Pet pet, AnimalDisplayScreen parent)
+        {
+            // Use db.properties file to access database
+            DatabaseManager databaseManager = new DatabaseManager();
+            // Assuming we have a connection to the database
+            try (Connection connection = databaseManager.getConnection()) {
+                // Check if the connection is fine
 
+                // Find maxId from comments
+                String maxIdQuery = "SELECT MAX(id_comment) AS highest_id_comment FROM comments";
+                try (PreparedStatement maxIdStatement = connection.prepareStatement(maxIdQuery))
+                {
+                    ResultSet maxIdResultSet = maxIdStatement.executeQuery();
+                    int highestId = 0;
+                    if (maxIdResultSet.next()) {
+                        highestId = maxIdResultSet.getInt("highest_id_comment");
+                    }
+                    // Calculate the new id_user for the next user
+                    int newIdComment = highestId + 1;
+                    String insertQuery = "INSERT INTO comments(id_comment, text, date, id_user, id_pet) VALUES (?, ?, ?, ?, ?)";
+                    try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
+
+                        // Get the current timestamp
+                        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+
+                        insertStatement.setInt(1, newIdComment);
+                        insertStatement.setString(2, text);
+                        insertStatement.setTimestamp(3, currentTimestamp);
+                        insertStatement.setInt(4, User.getCurrentUser().id());
+                        insertStatement.setInt(5, pet.getId());
+
+                        // Execute the insert query
+                        int rowsAffected = insertStatement.executeUpdate();
+
+                        if (rowsAffected > 0) {
+                            // User exists and passwords match, login successful
+                            JOptionPane.showMessageDialog(parent,"Message sent successfully");
+                        }
+                        else
+                            JOptionPane.showMessageDialog(parent,"Message could not be sent, due to a database issue");
+                    }
+                }
+                catch(SQLException e)
+                {
+                    // Could not create a new id
+                    JOptionPane.showMessageDialog(parent, "Could not send the message due to an id related problem");
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(parent, "Error connecting do the database");
+                e.printStackTrace();
+            }
+        }
     }
-
 }
