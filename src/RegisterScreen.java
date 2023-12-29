@@ -32,6 +32,7 @@ public class RegisterScreen extends JDialog {
         setModal(true);
         setBackgroundColor(Color.decode("#86D3A0"));
         setLocationRelativeTo(parent);
+        setResizable(false);
 
         // Customize the register button
         customizeButton(registerButton);
@@ -66,10 +67,9 @@ public class RegisterScreen extends JDialog {
         button.setForeground(Color.BLACK);
         button.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(Color.BLACK, 1, true),
-                new EmptyBorder(5, 20, 5, 20) // Adjusted the margin for the button
+                new EmptyBorder(5, 20, 5, 20)
         ));
-        button.setPreferredSize(new Dimension(120, button.getPreferredSize().height)); // Adjusted the width
-
+        button.setPreferredSize(new Dimension(120, button.getPreferredSize().height));
     }
     private void customizeTextField(JTextField textField) {
         textField.setColumns(20);

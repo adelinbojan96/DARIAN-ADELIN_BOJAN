@@ -30,7 +30,7 @@ public class VirtualDisplayPetAdoption implements ActionListener {
         // Adopt a pet (it also deletes it)
         Pet adoptedPet = adoptionPlatform.adoptPet("Buddy");
         if (adoptedPet != null) {
-            System.out.println("Congratulations! You've adopted: " + adoptedPet);
+            System.out.println("Congratulations! You've adopted: " + adoptedPet.getName());
         } else {
             System.out.println("Sorry, the requested pet is not available for adoption.");
         }

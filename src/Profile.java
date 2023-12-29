@@ -24,6 +24,8 @@ public class Profile extends JDialog {
     private JPanel profilePanel;
     private JLabel goToLoginScreen;
     private JLabel passwordProfile;
+    private JLabel messagesProfile;
+    public int numberOfMessages;
 
     public Profile(JFrame parent) {
         super(parent); // Call the parent constructor which requires a JFrame
@@ -31,7 +33,7 @@ public class Profile extends JDialog {
 
         setTitle("Your current profile");
         setContentPane(profilePanel);
-        setMinimumSize(new Dimension(517, 527));
+        setMinimumSize(new Dimension(517, 567));
         setModal(true);
         setLocationRelativeTo(parent);
 
@@ -42,13 +44,21 @@ public class Profile extends JDialog {
         // Display the image if it exists in the database
         if(User.isLoggedIn())
         {
+            int currentId = User.getCurrentUser().id();
             // Retrieve the image data from the database
-            byte[] imageData = retrieveImageDataFromDatabase(User.getCurrentUser().id());
+            byte[] imageData = retrieveImageDataFromDatabase(currentId);
 
             // If the image data is not null, update the profileImage
             if (imageData != null)
                 profileImage.setIcon(resizeImage(imageData));
 
+            // If messages >=0, display
+            int messages = retrieveNumberOfMessagesFromTheDatabase(currentId);
+            if(messages >= 0)
+            {
+                numberOfMessages = messages;
+                messagesProfile.setText("Messages sent: " + messages);
+            }
         }
 
         // Add customization for the 2 buttons
@@ -106,7 +116,7 @@ public class Profile extends JDialog {
         });
         buttonEdit.addActionListener(e -> {
             SwingUtilities.invokeLater(() -> {
-                EditProfile editProfileDialog = new EditProfile(null);
+                EditProfile editProfileDialog = new EditProfile(Profile.this,null);
                 editProfileDialog.setVisible(true);
             });
             dispose();
@@ -159,7 +169,7 @@ public class Profile extends JDialog {
         button.setForeground(Color.BLACK);
         button.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(Color.BLACK, 1, true),
-                new EmptyBorder(5, 20, 5, 20) // Adjusted the margin for the button
+                new EmptyBorder(5, 20, 5, 20)
         ));
     }
 
@@ -213,6 +223,25 @@ public class Profile extends JDialog {
             System.out.println("The image from the database could not be retrieved");
         }
         return null;
+    }
+    public int retrieveNumberOfMessagesFromTheDatabase(int userId){
+        DatabaseManager databaseManager = new DatabaseManager();
+        try (Connection connection = databaseManager.getConnection()) {
+            String query = "SELECT COUNT(id_comment) as count_messages FROM comments WHERE id_user = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setInt(1, userId);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        // Retrieve the number of messages from user
+                        return resultSet.getInt("count_messages");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("The number of messages from the database could not be retrieved");
+        }
+        return 0;
     }
     private ImageIcon resizeImage(byte[] imageData)
     {

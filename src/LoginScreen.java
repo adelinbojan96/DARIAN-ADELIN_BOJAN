@@ -28,6 +28,7 @@ public class LoginScreen extends JDialog {
         setMinimumSize(new Dimension(1056, 738));
         setModal(true);
         setLocationRelativeTo(parent);
+        setResizable(false);
 
         setBackgroundColor(Color.decode("#86D3A0"));
         // Customize the login button
@@ -43,7 +44,7 @@ public class LoginScreen extends JDialog {
             }
         });
 
-        // Move setVisible(true) to the end
+
         goToRegisterText.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

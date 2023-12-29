@@ -43,6 +43,7 @@ public class AnimalDisplayScreen extends JDialog {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+
                 SwingUtilities.invokeLater(() -> {
                     Profile profileDialog = new Profile(null);
                     profileDialog.setVisible(true);
