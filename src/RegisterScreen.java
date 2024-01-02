@@ -90,7 +90,7 @@ public class RegisterScreen extends JDialog {
                 preparedStatement.setString(1, username);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {
-                    // User exists or passwords match, register failed
+                    // User exists, register failed
                     JOptionPane.showMessageDialog(parent, "A user with the same name already exists");
                     registerSuccessful = false;
                 } else {
