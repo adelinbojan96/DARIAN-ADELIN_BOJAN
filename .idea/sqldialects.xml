@@ -2,6 +2,10 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/src/AnimalDisplayScreen.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/EditProfile.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/InfoPet.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/LoginScreen.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/Profile.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/RegisterScreen.java" dialect="GenericSQL" />
   </component>
 </project>

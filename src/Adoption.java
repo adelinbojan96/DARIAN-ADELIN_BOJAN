@@ -1,8 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.*;
 public class Adoption {
-    private List<Pet> availablePets;
+    private final List<Pet> availablePets;
 
     public Adoption() {
         this.availablePets = new ArrayList<>();
@@ -14,7 +13,8 @@ public class Adoption {
     public void displayAvailablePets() {
         System.out.println("Available Pets:");
         for (Pet pet : availablePets) {
-            System.out.println(pet);
+            System.out.println(pet.getId() + " " + pet.getName() + " " + pet.getAnimalType() +
+                    " " + pet.getBreed() + " " + pet.getAge());
         }
     }
 
