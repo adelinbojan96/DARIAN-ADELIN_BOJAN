@@ -11,18 +11,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class EditProfile extends JDialog{
-    private Profile profile;
+    private final Profile profile;
     private JPanel profilePanel;
     private JLabel profileImage;
-    private JLabel usernameProfile;
-    private JLabel emailProfile;
-    private JLabel phoneProfile;
     private JLabel goToProfile;
-    private JTextArea usernameTextField;
+    private JTextField usernameTextField;
     private JButton saveButton;
     private JPasswordField passwordTextField;
-    private JTextArea emailTextField;
-    private JTextArea phoneTextField;
+    private JTextField emailTextField;
+    private JTextField phoneTextField;
     private JLabel deleteMessages;
     private JLabel deleteUser;
 
@@ -144,7 +141,6 @@ public class EditProfile extends JDialog{
             // Handle database connection or query execution errors
             e.printStackTrace();
         }
-
     }
     private void deleteMessages(JFrame parent, int id_user) {
 

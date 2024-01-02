@@ -2,19 +2,13 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.InputStream;
 import java.sql.*;
-import java.util.Properties;
 
 public class RegisterScreen extends JDialog {
     private JPanel registerPanel;
     private JLabel icon;
-    private JLabel password;
-    private JLabel username;
     private JTextField usernameTextField;
     private JPasswordField passwordTextField;
     private JButton registerButton;

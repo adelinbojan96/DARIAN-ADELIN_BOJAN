@@ -15,9 +15,31 @@ public class AnimalDisplayScreen extends JDialog {
         super(parent, "Animal Display", true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
+        //initialise the background colors
+        Color firstColor = Color.decode("#b4c8ea");
+        Color secondColor = Color.decode("#87abff");
+        int indexColor = setTheme(parent);
+
+        if(indexColor == 1)
+        {
+            //original: #87abff
+            firstColor = Color.decode("#b4c8ea");
+            secondColor = Color.decode("#87abff");
+        }
+        else if(indexColor == 2)
+        {
+            firstColor = Color.decode("#fffdaf");
+            secondColor = Color.decode("#ffff97");
+        }
+        else if(indexColor == 3)
+        {
+            firstColor = Color.decode("#ffdbe0");
+            secondColor = Color.decode("#ffc5cd");
+        }
+
         // Create a main panel with GridBagLayout
         mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.setBackground(Color.decode("#87abff"));
+        mainPanel.setBackground(firstColor);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -30,7 +52,7 @@ public class AnimalDisplayScreen extends JDialog {
         // Create the panel for user information
         profilePanel = new JPanel();
         profilePanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        profilePanel.setBackground(Color.decode("#87abff"));
+        profilePanel.setBackground(secondColor);
 
         // Create labels to display user information
         JLabel nameLabel = new JLabel("user: " + (User.isLoggedIn() ? User.getCurrentUser().username() : "guest"));
@@ -53,7 +75,7 @@ public class AnimalDisplayScreen extends JDialog {
         });
 
         // Make an invisible border
-        Border emptyBorder = BorderFactory.createLineBorder(Color.decode("#87abff"),5);
+        Border emptyBorder = BorderFactory.createLineBorder(secondColor,4);
         profilePanel.setBorder(emptyBorder);
         // Add the user information panel to the content pane
         getContentPane().add(profilePanel, BorderLayout.NORTH);
@@ -91,7 +113,7 @@ public class AnimalDisplayScreen extends JDialog {
                     GridBagConstraints gbc = new GridBagConstraints();
                     gbc.gridx = animalCount % 3;  // Set to 3 for 3 columns per row
                     gbc.gridy = animalCount / 3;  // Set to 3 for 3 columns per row
-                    gbc.insets = new Insets(10, 10, 10, 10); // Increase spacing
+                    gbc.insets = new Insets(10, 10, 10, 10); // Spacing
                     mainPanel.add(animalPanel, gbc);
 
                     animalCount++;
@@ -129,7 +151,7 @@ public class AnimalDisplayScreen extends JDialog {
             ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
             JLabel imageLabel = new JLabel(scaledImageIcon);
             Border blackBorder = BorderFactory.createLineBorder(Color.BLACK, 3); // Created thickness
-            imageLabel.setBorder(BorderFactory.createCompoundBorder(blackBorder, BorderFactory.createEmptyBorder(-1, -1, -1, -1))); // Add an empty border for additional spacing
+            imageLabel.setBorder(BorderFactory.createCompoundBorder(blackBorder, BorderFactory.createEmptyBorder(-1, -1, -1, -1))); // Add an empty border for better framing
             leftPanel.add(imageLabel);
 
             imageLabel.addMouseListener(new MouseAdapter() {
@@ -250,5 +272,32 @@ public class AnimalDisplayScreen extends JDialog {
                 e.printStackTrace();
             }
         }
+    }
+    private int setTheme(JFrame parent)
+    {
+        DatabaseManager databaseManager = new DatabaseManager();
+        try (Connection connection = databaseManager.getConnection()) {
+            // Check if the user exists
+            String selectQuery = "SELECT color_preferred FROM users WHERE id_user = ?";
+            try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
+                selectStatement.setInt(1, User.getCurrentUser().id());
+                ResultSet resultSet = selectStatement.executeQuery();
+                if(resultSet.next()) {
+                    String color = resultSet.getString("color_preferred");
+                    // id found, update the texts with the corresponding values from database
+                    if(Objects.equals(color, "Blue"))
+                        return 1;
+                    else if(Objects.equals(color, "Yellow"))
+                        return 2;
+                    else if(Objects.equals(color, "Pink"))
+                        return 3;
+                }
+            }
+        } catch (SQLException e) {
+            // Handle database connection or query execution errors
+            JOptionPane.showMessageDialog(parent, "Error trying to change color");
+            e.printStackTrace();
+        }
+        return 1;
     }
 }

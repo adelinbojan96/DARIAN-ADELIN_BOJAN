@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class Profile extends JDialog {
     private JLabel profileImage;
@@ -25,6 +26,9 @@ public class Profile extends JDialog {
     private JLabel goToLoginScreen;
     private JLabel passwordProfile;
     private JLabel messagesProfile;
+    private JLabel blueIcon;
+    private JLabel yellowIcon;
+    private JLabel pinkIcon;
     public int numberOfMessages;
 
     public Profile(JFrame parent) {
@@ -33,7 +37,7 @@ public class Profile extends JDialog {
 
         setTitle("Your current profile");
         setContentPane(profilePanel);
-        setMinimumSize(new Dimension(517, 567));
+        setMinimumSize(new Dimension(517, 618));
         setModal(true);
         setLocationRelativeTo(parent);
 
@@ -42,8 +46,7 @@ public class Profile extends JDialog {
         profileImage.setBorder(emptyBorder);
 
         // Display the image if it exists in the database
-        if(User.isLoggedIn())
-        {
+        if (User.isLoggedIn()) {
             int currentId = User.getCurrentUser().id();
             // Retrieve the image data from the database
             byte[] imageData = retrieveImageDataFromDatabase(currentId);
@@ -54,8 +57,7 @@ public class Profile extends JDialog {
 
             // If messages >=0, display
             int messages = retrieveNumberOfMessagesFromTheDatabase(currentId);
-            if(messages >= 0)
-            {
+            if (messages >= 0) {
                 numberOfMessages = messages;
                 messagesProfile.setText("Messages sent: " + messages);
             }
@@ -73,8 +75,8 @@ public class Profile extends JDialog {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                new AnimalDisplayScreen(null);
                 dispose();
+                new AnimalDisplayScreen(null);
             }
         });
         // Set new image from local
@@ -110,16 +112,37 @@ public class Profile extends JDialog {
 
                 //go to LoginScreen and log out the current user
                 User.logout();
-                new LoginScreen(null);
                 dispose();
+                new LoginScreen(null);
             }
         });
         buttonEdit.addActionListener(e -> {
             SwingUtilities.invokeLater(() -> {
-                EditProfile editProfileDialog = new EditProfile(Profile.this,null);
+                EditProfile editProfileDialog = new EditProfile(Profile.this, null);
                 editProfileDialog.setVisible(true);
             });
             dispose();
+        });
+        blueIcon.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                updateColor("Blue", parent);
+            }
+        });
+        yellowIcon.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                updateColor("Yellow", parent);
+            }
+        });
+        pinkIcon.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                updateColor("Pink", parent);
+            }
         });
     }
 
@@ -180,13 +203,12 @@ public class Profile extends JDialog {
             int numberOfLettersPassword = User.getCurrentUser().password().length();
             String maskedPassword = "*".repeat(numberOfLettersPassword);
             usernameProfile.setText("User: " + User.getCurrentUser().username());
-            passwordProfile.setText("Password: " +  maskedPassword);
+            passwordProfile.setText("Password: " + maskedPassword);
             emailProfile.setText("Email: " + User.getCurrentUser().email());
             phoneProfile.setText("Phone number: " + User.getCurrentUser().phone());
             //If not null, we display it
             ImageIcon imageIcon = User.getCurrentUser().getImageIcon();
-            if(imageIcon != null)
-            {
+            if (imageIcon != null) {
                 // Resize the image
                 Image originalImage = imageIcon.getImage();
                 Image resizedImage = originalImage.getScaledInstance(240, 180, Image.SCALE_SMOOTH);
@@ -205,6 +227,7 @@ public class Profile extends JDialog {
             phoneProfile.setText("Phone number: No Phone Number");
         }
     }
+
     private byte[] retrieveImageDataFromDatabase(int userId) {
         DatabaseManager databaseManager = new DatabaseManager();
         try (Connection connection = databaseManager.getConnection()) {
@@ -224,7 +247,8 @@ public class Profile extends JDialog {
         }
         return null;
     }
-    public int retrieveNumberOfMessagesFromTheDatabase(int userId){
+
+    public int retrieveNumberOfMessagesFromTheDatabase(int userId) {
         DatabaseManager databaseManager = new DatabaseManager();
         try (Connection connection = databaseManager.getConnection()) {
             String query = "SELECT COUNT(id_comment) as count_messages FROM comments WHERE id_user = ?";
@@ -243,8 +267,8 @@ public class Profile extends JDialog {
         }
         return 0;
     }
-    private ImageIcon resizeImage(byte[] imageData)
-    {
+
+    private ImageIcon resizeImage(byte[] imageData) {
         // Resize the image
         ImageIcon imageIcon = new ImageIcon(imageData);
         Image originalImage = imageIcon.getImage();
@@ -252,4 +276,46 @@ public class Profile extends JDialog {
         return new ImageIcon(resizedImage);
     }
 
+    private void updateColor(String color, JFrame parent) {
+        //Here the id will come in our aid
+        DatabaseManager databaseManager = new DatabaseManager();
+        try (Connection connection = databaseManager.getConnection()) {
+            // Check if the user exists
+            String selectQuery = "SELECT color_preferred FROM users WHERE id_user = ?";
+            try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
+                selectStatement.setInt(1, User.getCurrentUser().id());
+                try (ResultSet resultSet = selectStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        // User is found, update the color
+                        String updateQuery = "UPDATE users SET color_preferred = ? WHERE id_user = ?";
+                        try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
+                            //We check what to update in the database
+
+                            updateStatement.setString(1, color);
+                            updateStatement.setInt(2, User.getCurrentUser().id());
+                            // Execute the update statement
+                            int rowsAffected = updateStatement.executeUpdate();
+
+                            if (rowsAffected > 0) {
+                                // Color update was successful
+                                JOptionPane.showMessageDialog(parent, "Edits were successful");
+                            } else {
+                                // No rows were affected, update failed
+                                JOptionPane.showMessageDialog(parent, "Edits have failed");
+                            }
+                        } catch (SQLException e) {
+                            JOptionPane.showMessageDialog(parent, "Error trying to update the details of the user (color)");
+                            e.printStackTrace();
+                        }
+                    } else {
+                        // User does not exist
+                        JOptionPane.showMessageDialog(parent, "A user with this id does not exist");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            // Handle database connection or query execution errors
+            e.printStackTrace();
+        }
+    }
 }

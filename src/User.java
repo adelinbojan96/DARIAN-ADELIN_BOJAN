@@ -34,6 +34,7 @@ public record User(int id, String username, String password, String email, Strin
         return image;
     }
 
+
     // Factory method to create a new user instance
     public static User createUser(int id, String username, String password, String email, String phone, byte[] image) {
         return new User(id, username, password, email, phone, image);

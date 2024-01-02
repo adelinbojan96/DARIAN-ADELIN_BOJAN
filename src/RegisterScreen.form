@@ -16,7 +16,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="5be2c" class="javax.swing.JLabel" binding="password">
+          <component id="5be2c" class="javax.swing.JLabel">
             <constraints>
               <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -25,7 +25,7 @@
               <text value="Password"/>
             </properties>
           </component>
-          <component id="c47eb" class="javax.swing.JLabel" binding="username">
+          <component id="c47eb" class="javax.swing.JLabel">
             <constraints>
               <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
