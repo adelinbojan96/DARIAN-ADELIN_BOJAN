@@ -8,7 +8,6 @@ import java.util.Objects;
 
 public class AnimalDisplayScreen extends JDialog {
     private JPanel mainPanel;
-    private JPanel profile;
     private JPanel profilePanel;  // New panel for user information
 
     public AnimalDisplayScreen(JFrame parent) {
@@ -51,25 +50,28 @@ public class AnimalDisplayScreen extends JDialog {
 
         // Create the panel for user information
         profilePanel = new JPanel();
-        profilePanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        profilePanel.setLayout(new BorderLayout());
         profilePanel.setBackground(secondColor);
 
         // Create labels to display user information
+        JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        userPanel.setBackground(secondColor);
         JLabel nameLabel = new JLabel("user: " + (User.isLoggedIn() ? User.getCurrentUser().username() : "guest"));
         Font labelFont = new Font("Roboto Thin", Font.PLAIN, 15);
         nameLabel.setFont(labelFont);
-        profilePanel.add(nameLabel);
+        userPanel.add(nameLabel);
+        profilePanel.add(userPanel, BorderLayout.EAST);  // Align to the right
 
-        JLabel iconLabel = new JLabel();
-        String path = "./Pictures/profileIcon.png";
-        ImageIcon pathIcon = new ImageIcon(path);
-        // Resize the ImageIcon to 40x40 pixels
-        Image scaledImage = pathIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-        ImageIcon scaledIcon = new ImageIcon(scaledImage);
-
-        iconLabel.setIcon(scaledIcon);
-        nameLabel.setFont(labelFont);
-        profilePanel.add(iconLabel);
+        // Create a panel for the pet label on the left
+        JPanel petPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));  // Align to the left
+        petPanel.setBackground(secondColor);
+        JLabel petAddLabel = new JLabel("Add ");
+        petAddLabel.setFont(labelFont);
+        petPanel.add(petAddLabel);
+        JLabel petDelLabel = new JLabel("/   remove pet");
+        petDelLabel.setFont(labelFont);
+        petPanel.add(petDelLabel);
+        profilePanel.add(petPanel, BorderLayout.WEST);
 
         //Action listener for accessing profile
         nameLabel.addMouseListener(new MouseAdapter() {
@@ -82,6 +84,51 @@ public class AnimalDisplayScreen extends JDialog {
                     profileDialog.setVisible(true);
                 });
                 dispose();
+            }
+        });
+
+        petAddLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                System.out.println("Add pet");
+                //Checks the manager code
+                String userInput = JOptionPane.showInputDialog("Enter the manager verification code:");
+                int check = checkStoreCode(parent, userInput);
+                if(userInput!=null)
+                {
+                    if(check == -1)
+                        JOptionPane.showMessageDialog(parent, "Invalid code");
+                    else
+                    {
+                        //Create a frame which adds a new pet if needed
+                        new AddPet(AnimalDisplayScreen.this,null, check);
+                    }
+                }
+            }
+        });
+
+        Color finalFirstColor = firstColor;
+        petDelLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                System.out.println("Delete pet");
+                //Checks the manager code
+                String userInput = JOptionPane.showInputDialog("Enter the manager verification code:");
+                int check = checkStoreCode(parent, userInput);
+                if(userInput!=null)
+                {
+                    if(check == -1)
+                        JOptionPane.showMessageDialog(parent, "Invalid code");
+                    else
+                    {
+                        //Navigate to DeletePet
+                        dispose();
+                        new DeletePet(null, finalFirstColor, check);
+                    }
+                }
+                //todo: create a new class or screen which deletes an animal from database
             }
         });
 
@@ -310,5 +357,31 @@ public class AnimalDisplayScreen extends JDialog {
             e.printStackTrace();
         }
         return 1;
+    }
+    private int checkStoreCode(JFrame parent, String codeProvidedByUser)
+    {
+        DatabaseManager databaseManager = new DatabaseManager();
+        try (Connection connection = databaseManager.getConnection()) {
+            // Check if the user exists
+            String selectQuery = "SELECT id_store FROM store WHERE manager_code = ?";
+            try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
+                selectStatement.setString(1, codeProvidedByUser);
+                ResultSet resultSet = selectStatement.executeQuery();
+                if(resultSet.next()) {
+                    //we have found the id_store
+                    return resultSet.getInt("id_store");
+                }
+                else {
+                    //we have not found the desired id
+
+                    return -1;
+                }
+            }
+        } catch (SQLException e) {
+            // Handle database connection or query execution errors
+            JOptionPane.showMessageDialog(parent, "Error trying to change color");
+            e.printStackTrace();
+        }
+        return -1;
     }
 }

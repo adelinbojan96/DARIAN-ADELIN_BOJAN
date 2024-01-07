@@ -90,15 +90,19 @@ public class Profile extends JDialog {
                 File selectedFile = fileChooser.getSelectedFile();
 
                 try {
-                    // Convert the selected image file to a byte array
-                    byte[] imageData = Files.readAllBytes(selectedFile.toPath());
+                    // Check if the selected file is an image
+                    if (isImageFile(selectedFile)) {
+                        // Convert the selected image file to a byte array
+                        byte[] imageData = Files.readAllBytes(selectedFile.toPath());
 
-                    // Update the user's profile image in the UI
-                    profileImage.setIcon(resizeImage(imageData));
+                        // Update the user's profile image in the UI
+                        profileImage.setIcon(resizeImage(imageData));
 
-                    // Update the pet's image in the database
-                    updateUserImageInDatabase(User.getCurrentUser().id(), imageData, parent);
-
+                        // Update the pet's image in the database
+                        updateUserImageInDatabase(User.getCurrentUser().id(), imageData, parent);
+                    } else {
+                        JOptionPane.showMessageDialog(Profile.this, "Invalid file format. Please select an image file.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 } catch (IOException ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(Profile.this, "Error reading the selected image file.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -194,6 +198,10 @@ public class Profile extends JDialog {
                 new LineBorder(Color.BLACK, 1, true),
                 new EmptyBorder(5, 20, 5, 20)
         ));
+    }
+    private boolean isImageFile(File file) {
+        String fileName = file.getName().toLowerCase();
+        return fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".png") || fileName.endsWith(".gif");
     }
 
     private void setUserInformation() {
