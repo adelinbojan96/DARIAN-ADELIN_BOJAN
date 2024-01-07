@@ -128,7 +128,6 @@ public class AnimalDisplayScreen extends JDialog {
                         new DeletePet(null, finalFirstColor, check);
                     }
                 }
-                //todo: create a new class or screen which deletes an animal from database
             }
         });
 
@@ -368,11 +367,11 @@ public class AnimalDisplayScreen extends JDialog {
                 selectStatement.setString(1, codeProvidedByUser);
                 ResultSet resultSet = selectStatement.executeQuery();
                 if(resultSet.next()) {
-                    //we have found the id_store
+                    //We have found the id_store
                     return resultSet.getInt("id_store");
                 }
                 else {
-                    //we have not found the desired id
+                    //We have not found the desired id
 
                     return -1;
                 }

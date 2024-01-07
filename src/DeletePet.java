@@ -11,7 +11,7 @@ public class DeletePet extends JDialog {
     private final JPanel mainPanel;
     public DeletePet(JFrame parent, Color backgroundColor, int id_store) {
         super(parent, "Delete Pet from Database", true);
-        //When user exists, current frames is gone, and they navigate to AnimalDisplayScreen again.
+        //When user exists, current frame is gone, and they navigate to AnimalDisplayScreen again.
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
