@@ -60,6 +60,17 @@ public class AnimalDisplayScreen extends JDialog {
         nameLabel.setFont(labelFont);
         profilePanel.add(nameLabel);
 
+        JLabel iconLabel = new JLabel();
+        String path = "./Pictures/profileIcon.png";
+        ImageIcon pathIcon = new ImageIcon(path);
+        // Resize the ImageIcon to 40x40 pixels
+        Image scaledImage = pathIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
+        iconLabel.setIcon(scaledIcon);
+        nameLabel.setFont(labelFont);
+        profilePanel.add(iconLabel);
+
         //Action listener for accessing profile
         nameLabel.addMouseListener(new MouseAdapter() {
             @Override
