@@ -91,7 +91,6 @@ public class AnimalDisplayScreen extends JDialog {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                System.out.println("Add pet");
                 //Checks the manager code
                 String userInput = JOptionPane.showInputDialog("Enter the manager verification code:");
                 int check = checkStoreCode(parent, userInput);
@@ -113,7 +112,6 @@ public class AnimalDisplayScreen extends JDialog {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                System.out.println("Delete pet");
                 //Checks the manager code
                 String userInput = JOptionPane.showInputDialog("Enter the manager verification code:");
                 int check = checkStoreCode(parent, userInput);
