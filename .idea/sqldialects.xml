@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/src/AddPet.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/AnimalDisplayScreen.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/DeletePet.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/EditProfile.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/InfoPet.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/LoginScreen.java" dialect="GenericSQL" />
