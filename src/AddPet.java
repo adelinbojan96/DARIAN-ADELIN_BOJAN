@@ -37,7 +37,7 @@ public class AddPet extends JDialog {
         setModal(true);
         setLocationRelativeTo(parent);
 
-        // Add a black border for each field
+        //Add a black border for each field
         storeBehaviour.setBorder(new LineBorder(Color.BLACK));
         storeTreatments.setBorder(new LineBorder(Color.BLACK));
         petName.setBorder(new LineBorder(Color.BLACK));
@@ -181,7 +181,6 @@ public class AddPet extends JDialog {
                 e.printStackTrace();
             }
         } catch (SQLException e) {
-            // Handle any SQL-related errors
             JOptionPane.showMessageDialog(parent, "Error connecting to the database.", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
