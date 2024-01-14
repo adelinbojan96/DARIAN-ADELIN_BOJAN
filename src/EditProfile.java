@@ -138,13 +138,11 @@ public class EditProfile extends JDialog{
                 }
             }
         } catch (SQLException e) {
-            // Handle database connection or query execution errors
             e.printStackTrace();
         }
     }
     private void deleteMessages(JFrame parent, int id_user) {
 
-        // Ask for confirmation before deleting messages
         int option = JOptionPane.showConfirmDialog(parent, "Are you sure you want to delete all messages?", "Confirmation", JOptionPane.YES_NO_OPTION);
 
         if (option == JOptionPane.YES_OPTION) {
@@ -175,7 +173,7 @@ public class EditProfile extends JDialog{
                 System.out.println("The deletion could not be performed");
             }
         } else {
-            // User chose not to delete messages
+            // User could not to delete messages
             JOptionPane.showMessageDialog(parent, "Deletion canceled");
         }
     }
@@ -232,7 +230,7 @@ public class EditProfile extends JDialog{
                 System.out.println("The deletion could not be performed");
             }
         } else {
-            // User chose not to delete messages
+            // User could not to delete messages
             JOptionPane.showMessageDialog(parent, "Deletion canceled");
         }
     }
