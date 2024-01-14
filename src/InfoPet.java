@@ -41,7 +41,7 @@ public class InfoPet extends JDialog {
             Image scaledImage = petIcon.getImage().getScaledInstance(240, 220, Image.SCALE_AREA_AVERAGING);
             petImage.setIcon(new ImageIcon(scaledImage));
         }
-        // Create a border for the image and set it if not null
+        //create a border for the image and set it if not null
         Border lineBorder = BorderFactory.createLineBorder(Color.BLACK, 3);
         petImage.setBorder(BorderFactory.createCompoundBorder(lineBorder, BorderFactory.createEmptyBorder(-1, -1, -1, -1)));
 
@@ -53,23 +53,22 @@ public class InfoPet extends JDialog {
     {
         DatabaseManager databaseManager = new DatabaseManager();
         try (Connection connection = databaseManager.getConnection()) {
-            // Check if the user exists
+           
             String selectQuery = "SELECT * FROM store WHERE id_store = (SELECT id_store FROM pet WHERE id_pet = ?)";
             try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
                 selectStatement.setInt(1, pet.getId());
                 ResultSet resultSet = selectStatement.executeQuery();
                 if(resultSet.next()) {
-                    // id found, update the texts with the corresponding values from database
+                    //id found, update the texts with the corresponding values from database
                     storeName.setText("Name: " + resultSet.getString("name"));
                     storeYears.setText("Years of activity: " + resultSet.getInt("years_of_activity"));
                     storeCity.setText("Location: " + resultSet.getString("city"));
                 } else {
-                    // User does not exist
+                    //user does not exist
                     JOptionPane.showMessageDialog(parent, "Could not display the store information due to an id related problem");
                 }
             }
         } catch (SQLException e) {
-            // Handle database connection or query execution errors
             JOptionPane.showMessageDialog(parent, "Error trying to access the database");
             e.printStackTrace();
         }
@@ -78,14 +77,14 @@ public class InfoPet extends JDialog {
     {
         DatabaseManager databaseManager = new DatabaseManager();
         try (Connection connection = databaseManager.getConnection()) {
-            // Check if the user exists
+       
             String selectQuery = "SELECT * FROM pet_history WHERE id_history = (SELECT id_history FROM pet WHERE id_pet = ?)";
             try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
                 selectStatement.setInt(1, pet.getId());
                 ResultSet resultSet = selectStatement.executeQuery();
                 if(resultSet.next()) {
                     String descriptionIssues = resultSet.getString("previous_medical_treatment_desc");
-                    // id found, update the texts with the corresponding values from database
+                    //id found, update the texts with the corresponding values from database
                     historyYears.setText("Years spent in this center: " + resultSet.getInt("years_in_shop"));
                     historyBehaviour.setText("Behaviour: " + resultSet.getString("pet_behaviour_desc"));
                     if(descriptionIssues != null && !descriptionIssues.isEmpty())
