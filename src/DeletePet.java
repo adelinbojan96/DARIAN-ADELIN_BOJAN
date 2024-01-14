@@ -11,7 +11,7 @@ public class DeletePet extends JDialog {
     private final JPanel mainPanel;
     public DeletePet(JFrame parent, Color backgroundColor, int id_store) {
         super(parent, "Delete Pet from Database", true);
-        //When user exists, current frame is gone, and they navigate to AnimalDisplayScreen again.
+        // When user exists, current frame is gone, and they navigate to AnimalDisplayScreen again.
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -41,18 +41,14 @@ public class DeletePet extends JDialog {
         setVisible(true);
     }
     private void displayAnimalData(JFrame parent, int id_store) {
-        // JDBC connection parameters (unchanged)
         DatabaseManager databaseManager = new DatabaseManager();
         try (Connection connection = databaseManager.getConnection()) {
-            // Create and execute the SQL query with a WHERE clause to filter by id_store
             String query = "SELECT id_pet, name, animal_type, breed, age, image FROM pet WHERE id_store = ?";
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setInt(1, id_store);
                 try (ResultSet resultSet = statement.executeQuery()) {
-
                     int animalCount = 0;
 
-                    // Iterate through the result set and add a custom AnimalPanel for each entry
                     while (resultSet.next()) {
                         int id = resultSet.getInt("id_pet");
                         String name = resultSet.getString("name");
@@ -66,7 +62,7 @@ public class DeletePet extends JDialog {
                         GridBagConstraints gbc = new GridBagConstraints();
                         gbc.gridx = animalCount % 3;  // Set to 3 for 3 columns per row
                         gbc.gridy = animalCount / 3;  // Set to 3 for 3 columns per row
-                        gbc.insets = new Insets(10, 10, 10, 10); // Spacing
+                        gbc.insets = new Insets(10, 10, 10, 10); // Meant for spacing
                         mainPanel.add(animalPanel, gbc);
 
                         animalCount++;
@@ -88,7 +84,7 @@ public class DeletePet extends JDialog {
             String breed = pet.getBreed();
             int age = pet.getAge();
 
-            setLayout(new BorderLayout()); // Use BorderLayout for the main layout
+            setLayout(new BorderLayout()); // Main layout uses BorderLayout
 
             Color backgroundColor = Color.white;
             // Left panel for image
@@ -113,7 +109,7 @@ public class DeletePet extends JDialog {
             imageLabel.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    //Deletes a pet
+                    // Deletes a pet from db
                     deletePet(parent, pet);
                 }
             });
@@ -148,7 +144,7 @@ public class DeletePet extends JDialog {
             setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
         }
         private ImageIcon createPlaceholderIcon() {
-            // Create a placeholder image
+            //Create a placeholder image
             return new ImageIcon(Objects.requireNonNull(getClass().getResource("./Pictures/placeHolder.png")));
         }
     }
@@ -167,7 +163,6 @@ public class DeletePet extends JDialog {
                 }
             }
         } catch (SQLException e) {
-            // Handle database connection or query execution errors
             JOptionPane.showMessageDialog(parent, "Error trying to access the database");
             e.printStackTrace();
         }
@@ -175,7 +170,6 @@ public class DeletePet extends JDialog {
     }
     private void deletePet(JFrame parent, Pet pet)
     {
-        // Ask for confirmation before deleting messages
         int option = JOptionPane.showConfirmDialog(parent, "Are you sure you want to delete " + pet.getName() + " from database?", "Confirmation", JOptionPane.YES_NO_OPTION);
         if(option == JOptionPane.YES_OPTION)
         {
@@ -218,7 +212,7 @@ public class DeletePet extends JDialog {
                 }
                 else
                 {
-                    ///There is nothing to delete
+                    /// There is nothing to delete
                     secondQuery = true;
                 }
                 if(firstQuery && secondQuery)
@@ -234,7 +228,7 @@ public class DeletePet extends JDialog {
                 System.out.println("The deletion could not be performed");
             }
         } else {
-            // User chose not to delete messages
+            // User could not to delete messages
             JOptionPane.showMessageDialog(parent, "Deletion canceled");
         }
     }
