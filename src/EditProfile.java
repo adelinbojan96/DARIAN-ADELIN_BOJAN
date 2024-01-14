@@ -38,7 +38,7 @@ public class EditProfile extends JDialog{
         Border emptyBorder = BorderFactory.createLineBorder(Color.BLACK, 5);
         profileImage.setBorder(emptyBorder);
 
-        // Display the image if it exists in the database and is updated in the User Class
+
         if(User.isLoggedIn() && User.getCurrentUser() != null)
         {
             ImageIcon imageIcon = User.getCurrentUser().getImageIcon();
@@ -85,19 +85,19 @@ public class EditProfile extends JDialog{
 
     private void updateUserSettingsInDatabase(int id, String newUsername, String newPassword, String newEmail, String newPhone, JFrame parent)
     {
-        //Here the id will come in our aid
+        
         DatabaseManager databaseManager = new DatabaseManager();
         try (Connection connection = databaseManager.getConnection()) {
-            // Check if the user exists
+            
             String selectQuery = "SELECT * FROM users WHERE id_user = ?";
             try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
                 selectStatement.setInt(1, id);
                 ResultSet resultSet = selectStatement.executeQuery();
                 if (resultSet.next()) {
-                    // User is found, update the image
+                    //user is found, update the image
                     String updateQuery = "UPDATE users SET username = ?, password = ?, email = ?, phone_number = ?  WHERE id_user = ?";
                     try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
-                        //We check what to update in the database
+                        //we check what to update in the database
                         String username = (!newUsername.isEmpty()) ? newUsername : User.getCurrentUser().username();
                         String password = (!newPassword.isEmpty()) ? newPassword : User.getCurrentUser().password();
                         String email = (!newEmail.isEmpty()) ? newEmail : User.getCurrentUser().email();
@@ -109,11 +109,11 @@ public class EditProfile extends JDialog{
                         updateStatement.setString(4, phone);
                         updateStatement.setInt(5, id);
 
-                        // Execute the update statement
+                        //execute the update statement
                         int rowsAffected = updateStatement.executeUpdate();
 
                         if (rowsAffected > 0) {
-                            // Image update successful
+                            //image update successful
                             JOptionPane.showMessageDialog(parent, "Edits were successful");
                             User user = User.createUser(id, username, password, email, phone, User.getCurrentUser().image());
                             User.setCurrentUser(user);
@@ -125,7 +125,7 @@ public class EditProfile extends JDialog{
                             dispose();
 
                         } else {
-                            // No rows were affected, update failed
+                            //no rows were affected, update failed
                             JOptionPane.showMessageDialog(parent, "Edits have failed");
                         }
                     } catch (SQLException e) {
@@ -133,7 +133,7 @@ public class EditProfile extends JDialog{
                         e.printStackTrace();
                     }
                 } else {
-                    // User does not exist
+                    //user does not exist
                     JOptionPane.showMessageDialog(parent, "A user with this id does not exist");
                 }
             }
@@ -154,7 +154,7 @@ public class EditProfile extends JDialog{
                     int rowsAffected = preparedStatement.executeUpdate();
 
                     if (rowsAffected > 0) {
-                        // Display message and then go back to Profile Screen
+                        //display message and then go back to Profile Screen
                         JOptionPane.showMessageDialog(parent, "Successfully deleted all the messages");
 
                         dispose();
@@ -164,7 +164,7 @@ public class EditProfile extends JDialog{
                         });
 
                     } else {
-                        // Could not delete the rows
+                        //could not delete the rows
                         JOptionPane.showMessageDialog(parent, "Could not delete the rows");
                     }
                 }
@@ -173,16 +173,14 @@ public class EditProfile extends JDialog{
                 System.out.println("The deletion could not be performed");
             }
         } else {
-            // User could not to delete messages
+            //user could not to delete messages
             JOptionPane.showMessageDialog(parent, "Deletion canceled");
         }
     }
 
     private void deleteUser(JFrame parent, int id_user)
     {
-        // Ask for confirmation before deleting messages
         int option = JOptionPane.showConfirmDialog(parent, "Are you sure you want to delete the user?", "Confirmation", JOptionPane.YES_NO_OPTION);
-
         if(option == JOptionPane.YES_OPTION)
         {
             DatabaseManager databaseManager = new DatabaseManager();
@@ -198,7 +196,7 @@ public class EditProfile extends JDialog{
                     if (rowsAffected > 0 || profile.numberOfMessages == 0) {
                         firstQuery = true;
                     } else {
-                        // Could not delete the rows
+        
                         JOptionPane.showMessageDialog(parent, "Could not delete the rows");
                     }
                 }
@@ -209,19 +207,19 @@ public class EditProfile extends JDialog{
                     if (rowsAffected > 0) {
                         secondQuery = true;
                     } else {
-                        // Could not delete the rows
+                    
                         JOptionPane.showMessageDialog(parent, "Could not delete the rows");
                     }
                 }
                 if(firstQuery && secondQuery)
                 {
-                    // Successfully deleted user
+                    //successfully deleted user
                     JOptionPane.showMessageDialog(parent, "User deleted successfully");
 
-                    // Logout from record User
+                    //logout from record User
                     User.logout();
 
-                    // Access LoginScreen
+                    //access LoginScreen
                     dispose();
                     new LoginScreen(null);
                 }
@@ -230,7 +228,7 @@ public class EditProfile extends JDialog{
                 System.out.println("The deletion could not be performed");
             }
         } else {
-            // User could not to delete messages
+            //user could not to delete messages
             JOptionPane.showMessageDialog(parent, "Deletion canceled");
         }
     }
@@ -246,7 +244,6 @@ public class EditProfile extends JDialog{
     }
     private ImageIcon resizeImage(ImageIcon imageIcon)
     {
-        // Resize the image
         Image originalImage = imageIcon.getImage();
         Image resizedImage = originalImage.getScaledInstance(240, 180, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);
