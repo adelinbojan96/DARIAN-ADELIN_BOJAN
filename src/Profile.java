@@ -314,7 +314,7 @@ public class Profile extends JDialog {
                             e.printStackTrace();
                         }
                     } else {
-                        // User does not exist
+                        //user does not exist
                         JOptionPane.showMessageDialog(parent, "A user with this id does not exist");
                     }
                 }
