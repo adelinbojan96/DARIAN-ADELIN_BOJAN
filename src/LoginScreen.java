@@ -73,7 +73,6 @@ public class LoginScreen extends JDialog {
         // Use db.properties file to access database
         DatabaseManager databaseManager = new DatabaseManager();
 
-        // Assuming we have a connection to the database
         try (Connection connection = databaseManager.getConnection()) {
             // Check if the user exists
             String sqlQuery = "SELECT * FROM users WHERE username = ? AND password = ?";
