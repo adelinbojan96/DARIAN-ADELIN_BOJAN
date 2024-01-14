@@ -95,7 +95,6 @@ public class InfoPet extends JDialog {
                 }
             }
         } catch (SQLException e) {
-            // Handle database connection or query execution errors
             JOptionPane.showMessageDialog(parent, "Error trying to access the database");
             e.printStackTrace();
         }
