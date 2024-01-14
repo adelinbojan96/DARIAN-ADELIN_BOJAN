@@ -129,7 +129,7 @@ public class AnimalDisplayScreen extends JDialog {
             }
         });
 
-        // Make an invisible border
+        // Create an invisible border
         Border emptyBorder = BorderFactory.createLineBorder(secondColor,4);
         profilePanel.setBorder(emptyBorder);
         // Add the user information panel to the content pane
@@ -144,7 +144,7 @@ public class AnimalDisplayScreen extends JDialog {
         setVisible(true);
     }
     private void displayAnimalData() {
-        // JDBC connection parameters (unchanged)
+        // JDBC connection parameters
         DatabaseManager databaseManager = new DatabaseManager();
         try (Connection connection = databaseManager.getConnection()) {
             // Create and execute the SQL query
@@ -154,7 +154,6 @@ public class AnimalDisplayScreen extends JDialog {
 
                 int animalCount = 0;
 
-                // Iterate through the result set and add a custom AnimalPanel for each entry
                 while (resultSet.next()) {
                     int id = resultSet.getInt("id_pet");
                     String name = resultSet.getString("name");
@@ -279,9 +278,7 @@ public class AnimalDisplayScreen extends JDialog {
         {
             // Use db.properties file to access database
             DatabaseManager databaseManager = new DatabaseManager();
-            // Assuming we have a connection to the database
             try (Connection connection = databaseManager.getConnection()) {
-                // Check if the connection is fine
 
                 // Find maxId from comments
                 String maxIdQuery = "SELECT MAX(id_comment) AS highest_id_comment FROM comments";
@@ -297,7 +294,7 @@ public class AnimalDisplayScreen extends JDialog {
                     String insertQuery = "INSERT INTO comments(id_comment, text, date, id_user, id_pet) VALUES (?, ?, ?, ?, ?)";
                     try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
 
-                        // Get the current timestamp
+                        // Get the current timestamp for the comment
                         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
 
                         insertStatement.setInt(1, newIdComment);
@@ -349,7 +346,6 @@ public class AnimalDisplayScreen extends JDialog {
                 }
             }
         } catch (SQLException e) {
-            // Handle database connection or query execution errors
             JOptionPane.showMessageDialog(parent, "Error trying to change color");
             e.printStackTrace();
         }
@@ -365,17 +361,15 @@ public class AnimalDisplayScreen extends JDialog {
                 selectStatement.setString(1, codeProvidedByUser);
                 ResultSet resultSet = selectStatement.executeQuery();
                 if(resultSet.next()) {
-                    //We have found the id_store
+                    // We have found the id_store
                     return resultSet.getInt("id_store");
                 }
                 else {
-                    //We have not found the desired id
-
+                    // We have not found the desired id
                     return -1;
                 }
             }
         } catch (SQLException e) {
-            // Handle database connection or query execution errors
             JOptionPane.showMessageDialog(parent, "Error trying to change color");
             e.printStackTrace();
         }
