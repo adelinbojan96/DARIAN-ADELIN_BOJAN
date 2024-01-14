@@ -14,7 +14,7 @@ public class LoginScreen extends JDialog {
     private JLabel goToRegisterText;
     private boolean loginSuccessful = true;
     public LoginScreen(JFrame parent) {
-        super(parent); // Call the parent constructor which requires a JFrame
+        super(parent);
         setTitle("Log into your account");
         setContentPane(loginPanel);
         setMinimumSize(new Dimension(1056, 738));
@@ -23,9 +23,7 @@ public class LoginScreen extends JDialog {
         setResizable(false);
 
         setBackgroundColor(Color.decode("#86D3A0"));
-        // Customize the login button
         customizeButton(loginButton);
-        // Customization in terms of appearance and number of columns the textFields
         customizeTextField(usernameTextField);
         customizeTextField(passwordTextField);
         loginButton.addActionListener(e -> {
@@ -70,18 +68,18 @@ public class LoginScreen extends JDialog {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
-        // Use db.properties file to access database
+        //use db.properties file to access database
         DatabaseManager databaseManager = new DatabaseManager();
 
         try (Connection connection = databaseManager.getConnection()) {
-            // Check if the user exists
+            //check if the user exists
             String sqlQuery = "SELECT * FROM users WHERE username = ? AND password = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, password);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {
-                    // User exists and passwords match, login successful
+                    //user exists and passwords match, login successful
                     User loggedInUser = User.createUser(
                             resultSet.getInt("id_user"),
                             resultSet.getString("username"),
@@ -95,7 +93,7 @@ public class LoginScreen extends JDialog {
                     JOptionPane.showMessageDialog(parent, "You have successfully logged in.");
                     loginSuccessful = true;
                 } else {
-                    // User does not exist or passwords do not match
+                    //user does not exist or passwords do not match
                     JOptionPane.showMessageDialog(parent, "Invalid username or password.");
                     loginSuccessful = false;
                 }
