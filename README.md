@@ -7,6 +7,8 @@ Adoption Applications: Users can submit adoption applications directly through t
 User Profiles: Users can create profiles to manage their adoption applications, update profile by either changing their name, picture or more important details (such as password or email), and messaging history.
 Manager Rights: In order to update the animals for adoption (add or delete), a unique manager code is provided for each organization such that only certain people can add animals via the application.
 
-Change db.properties with your details in order to use the database you want.
-Use importDatabaseEasy and access the file with the code. It will generate generate the database needed for the project.
-If importDatabaseEasy does not work, the repository has all 6 files (create tables, import the 5 tables) in separated files.
+Database setup:
+-> To configure the database for the project, follow these steps <-
+Update the db.properties file with your database details.
+Utilize importDatabaseEasy to generate the necessary database for the project.
+If importDatabaseEasy encounters issues, the repository includes separate files for creating tables and importing data.
