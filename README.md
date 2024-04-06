@@ -12,3 +12,5 @@ Database setup:
 Update the db.properties file with your database details.
 Utilize importDatabaseEasy to generate the necessary database for the project.
 If importDatabaseEasy encounters issues, the repository includes separate files for creating tables and importing data.
+
+![image](https://github.com/adelinbojan96/PetAdoptionPlatform/assets/113366480/db48f4b7-cd79-40ed-b5c1-2b3371cf118f)
