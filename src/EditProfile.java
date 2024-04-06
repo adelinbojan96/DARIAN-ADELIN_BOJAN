@@ -30,7 +30,7 @@ public class EditProfile extends JDialog{
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         setTitle("Edit your profile");
-        setContentPane(profilePanel);
+        setContentPane(profilePanel)    ;
         setMinimumSize(new Dimension(517, 544));
         setModal(true);
         setLocationRelativeTo(parent);
@@ -244,7 +244,6 @@ public class EditProfile extends JDialog{
                 new LineBorder(Color.BLACK, 1, true),
                 new EmptyBorder(5, 20, 5, 20)
         ));
-
     }
     private ImageIcon resizeImage(ImageIcon imageIcon)
     {
