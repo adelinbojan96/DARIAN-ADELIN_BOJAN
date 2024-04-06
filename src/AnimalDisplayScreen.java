@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class AnimalDisplayScreen extends JDialog {
     private JPanel mainPanel;
-    private JPanel profilePanel;  // New panel for user information
+    private JPanel profilePanel;  // new panel for user information
 
     public AnimalDisplayScreen(JFrame parent) {
         super(parent, "Animal Display", true);
@@ -36,7 +36,7 @@ public class AnimalDisplayScreen extends JDialog {
             secondColor = Color.decode("#ffc5cd");
         }
 
-        // Create a main panel with GridBagLayout
+        //create a main panel with GridBagLayout
         mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBackground(firstColor);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -45,15 +45,15 @@ public class AnimalDisplayScreen extends JDialog {
 
         JScrollPane scrollPane = new JScrollPane(mainPanel);
 
-        // Add the scroll pane to the content pane
+        //add the scroll pane to the content pane
         getContentPane().add(scrollPane);
 
-        // Create the panel for user information
+        //create the panel for user information
         profilePanel = new JPanel();
         profilePanel.setLayout(new BorderLayout());
         profilePanel.setBackground(secondColor);
 
-        // Create labels to display user information
+        //create labels to display user information
         JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         userPanel.setBackground(secondColor);
         JLabel nameLabel = new JLabel("user: " + (User.isLoggedIn() ? User.getCurrentUser().username() : "guest"));
@@ -62,7 +62,7 @@ public class AnimalDisplayScreen extends JDialog {
         userPanel.add(nameLabel);
         profilePanel.add(userPanel, BorderLayout.EAST);  // Align to the right
 
-        // Create a panel for the pet label on the left
+        //create a panel for the pet label on the left
         JPanel petPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));  // Align to the left
         petPanel.setBackground(secondColor);
         JLabel petAddLabel = new JLabel("Add ");
@@ -73,7 +73,6 @@ public class AnimalDisplayScreen extends JDialog {
         petPanel.add(petDelLabel);
         profilePanel.add(petPanel, BorderLayout.WEST);
 
-        //Action listener for accessing profile
         nameLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -91,7 +90,7 @@ public class AnimalDisplayScreen extends JDialog {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                //Checks the manager code
+                //checks the manager code
                 String userInput = JOptionPane.showInputDialog("Enter the manager verification code:");
                 int check = checkStoreCode(parent, userInput);
                 if(userInput!=null)
@@ -100,7 +99,7 @@ public class AnimalDisplayScreen extends JDialog {
                         JOptionPane.showMessageDialog(parent, "Invalid code");
                     else
                     {
-                        //Create a frame which adds a new pet if needed
+                        //create a frame which adds a new pet if needed
                         new AddPet(AnimalDisplayScreen.this,null, check);
                     }
                 }
@@ -112,7 +111,7 @@ public class AnimalDisplayScreen extends JDialog {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                //Checks the manager code
+                //checks the manager code
                 String userInput = JOptionPane.showInputDialog("Enter the manager verification code:");
                 int check = checkStoreCode(parent, userInput);
                 if(userInput!=null)
@@ -121,7 +120,7 @@ public class AnimalDisplayScreen extends JDialog {
                         JOptionPane.showMessageDialog(parent, "Invalid code");
                     else
                     {
-                        //Navigate to DeletePet
+                        //navigate to DeletePet
                         dispose();
                         new DeletePet(null, finalFirstColor, check);
                     }
@@ -129,32 +128,25 @@ public class AnimalDisplayScreen extends JDialog {
             }
         });
 
-        // Make an invisible border
         Border emptyBorder = BorderFactory.createLineBorder(secondColor,4);
         profilePanel.setBorder(emptyBorder);
-        // Add the user information panel to the content pane
         getContentPane().add(profilePanel, BorderLayout.NORTH);
 
-        // Set size and make the dialog visible
         setSize(1240, 720);
         setLocationRelativeTo(parent);
 
-        // Retrieve data from the database and display it
         displayAnimalData();
         setVisible(true);
     }
     private void displayAnimalData() {
-        // JDBC connection parameters (unchanged)
         DatabaseManager databaseManager = new DatabaseManager();
         try (Connection connection = databaseManager.getConnection()) {
-            // Create and execute the SQL query
             String query = "SELECT id_pet, name, animal_type, breed, age, image FROM pet";
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(query)) {
 
                 int animalCount = 0;
 
-                // Iterate through the result set and add a custom AnimalPanel for each entry
                 while (resultSet.next()) {
                     int id = resultSet.getInt("id_pet");
                     String name = resultSet.getString("name");
@@ -189,14 +181,14 @@ public class AnimalDisplayScreen extends JDialog {
             String breed = pet.getBreed();
             int age = pet.getAge();
 
-            setLayout(new BorderLayout()); // Use BorderLayout for the main layout
+            setLayout(new BorderLayout()); //use BorderLayout for the main layout
 
             Color backgroundColor = Color.white;
-            // Left panel for image
+            //left panel for image
             JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             leftPanel.setBackground(backgroundColor);
 
-            ImageIcon placeholderIcon = createPlaceholderIcon(); // Create a placeholder ImageIcon
+            ImageIcon placeholderIcon = createPlaceholderIcon(); //create a placeholder ImageIcon
 
             ImageIcon imageIcon = pet.getImageIcon();
             Image scaledImage = (imageIcon != null) ?
@@ -205,8 +197,8 @@ public class AnimalDisplayScreen extends JDialog {
 
             ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
             JLabel imageLabel = new JLabel(scaledImageIcon);
-            Border blackBorder = BorderFactory.createLineBorder(Color.BLACK, 3); // Created thickness
-            imageLabel.setBorder(BorderFactory.createCompoundBorder(blackBorder, BorderFactory.createEmptyBorder(-1, -1, -1, -1))); // Add an empty border for better framing
+            Border blackBorder = BorderFactory.createLineBorder(Color.BLACK, 3); //created thickness
+            imageLabel.setBorder(BorderFactory.createCompoundBorder(blackBorder, BorderFactory.createEmptyBorder(-1, -1, -1, -1))); //add an empty border for better framing
             leftPanel.add(imageLabel);
 
             imageLabel.addMouseListener(new MouseAdapter() {
@@ -216,11 +208,11 @@ public class AnimalDisplayScreen extends JDialog {
                 }
             });
 
-            // Right panel for details
+            //right panel for details
             JPanel rightPanel = new JPanel();
             rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
-            // Details panel with GridLayout to display details in independent rows
+            //details panel with GridLayout to display details in independent rows
             JPanel detailsPanel = new JPanel(new GridLayout(0, 1));
             detailsPanel.setBackground(backgroundColor);
             JLabel nameLabel = new JLabel(name);
@@ -259,29 +251,25 @@ public class AnimalDisplayScreen extends JDialog {
             saveButton.addActionListener(e -> {
                 String commentText = commentArea.getText();
                 if (!commentText.isEmpty()) {
-                    // Call the insertMessage method to insert the comment into the database
                     insertMessage(commentText, pet, AnimalDisplayScreen.this);
                 } else {
-                    // Show a message if the comment text is empty
                     JOptionPane.showMessageDialog(AnimalDisplayScreen.this, "Please enter a comment before sending.");
                 }
             });
-            // Add left and right panels to the main panel
+            //left and right pannels added to the main panel
             add(leftPanel, BorderLayout.WEST);
             add(rightPanel, BorderLayout.CENTER);
         }
 
         private ImageIcon createPlaceholderIcon() {
-            // Create a placeholder image
+            //placeholder image
             return new ImageIcon(Objects.requireNonNull(getClass().getResource("./Pictures/placeHolder.png")));
         }
         private void insertMessage(String text, Pet pet, AnimalDisplayScreen parent)
         {
             // Use db.properties file to access database
             DatabaseManager databaseManager = new DatabaseManager();
-            // Assuming we have a connection to the database
             try (Connection connection = databaseManager.getConnection()) {
-                // Check if the connection is fine
 
                 // Find maxId from comments
                 String maxIdQuery = "SELECT MAX(id_comment) AS highest_id_comment FROM comments";
@@ -292,12 +280,11 @@ public class AnimalDisplayScreen extends JDialog {
                     if (maxIdResultSet.next()) {
                         highestId = maxIdResultSet.getInt("highest_id_comment");
                     }
-                    // Calculate the new id_user for the next user
+                
                     int newIdComment = highestId + 1;
                     String insertQuery = "INSERT INTO comments(id_comment, text, date, id_user, id_pet) VALUES (?, ?, ?, ?, ?)";
                     try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
-
-                        // Get the current timestamp
+                        
                         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
 
                         insertStatement.setInt(1, newIdComment);
@@ -306,11 +293,11 @@ public class AnimalDisplayScreen extends JDialog {
                         insertStatement.setInt(4, User.getCurrentUser().id());
                         insertStatement.setInt(5, pet.getId());
 
-                        // Execute the insert query
+                        
                         int rowsAffected = insertStatement.executeUpdate();
 
                         if (rowsAffected > 0) {
-                            // User exists and passwords match, login successful
+                            
                             JOptionPane.showMessageDialog(parent,"Message sent successfully");
                         }
                         else
@@ -319,7 +306,7 @@ public class AnimalDisplayScreen extends JDialog {
                 }
                 catch(SQLException e)
                 {
-                    // Could not create a new id
+                    //could not create a new id
                     JOptionPane.showMessageDialog(parent, "Could not send the message due to an id related problem");
                 }
             } catch (SQLException e) {
@@ -332,7 +319,6 @@ public class AnimalDisplayScreen extends JDialog {
     {
         DatabaseManager databaseManager = new DatabaseManager();
         try (Connection connection = databaseManager.getConnection()) {
-            // Check if the user exists
             String selectQuery = "SELECT color_preferred FROM users WHERE id_user = ?";
             try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
                 selectStatement.setInt(1, User.getCurrentUser().id());
@@ -349,7 +335,6 @@ public class AnimalDisplayScreen extends JDialog {
                 }
             }
         } catch (SQLException e) {
-            // Handle database connection or query execution errors
             JOptionPane.showMessageDialog(parent, "Error trying to change color");
             e.printStackTrace();
         }
@@ -359,23 +344,16 @@ public class AnimalDisplayScreen extends JDialog {
     {
         DatabaseManager databaseManager = new DatabaseManager();
         try (Connection connection = databaseManager.getConnection()) {
-            // Check if the user exists
             String selectQuery = "SELECT id_store FROM store WHERE manager_code = ?";
             try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
                 selectStatement.setString(1, codeProvidedByUser);
                 ResultSet resultSet = selectStatement.executeQuery();
-                if(resultSet.next()) {
-                    //We have found the id_store
+                if(resultSet.next()) 
                     return resultSet.getInt("id_store");
-                }
-                else {
-                    //We have not found the desired id
-
+                else 
                     return -1;
-                }
             }
         } catch (SQLException e) {
-            // Handle database connection or query execution errors
             JOptionPane.showMessageDialog(parent, "Error trying to change color");
             e.printStackTrace();
         }

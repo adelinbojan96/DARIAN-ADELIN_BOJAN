@@ -21,7 +21,7 @@ public class DatabaseManager {
                 return;
             }
 
-            // Load a properties file from class path
+            //load db.properties file
             properties.load(input);
         } catch (IOException e) {
             e.printStackTrace();

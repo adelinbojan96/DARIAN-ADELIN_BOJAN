@@ -28,9 +28,7 @@ public class RegisterScreen extends JDialog {
         setLocationRelativeTo(parent);
         setResizable(false);
 
-        // Customize the register button
         customizeButton(registerButton);
-        // Customization in terms of appearance and number of columns the textFields
         customizeTextField(usernameTextField);
         customizeTextField(passwordTextField);
         customizeTextField(mailTextField);
@@ -80,21 +78,20 @@ public class RegisterScreen extends JDialog {
         String email = mailTextField.getText();
         String number = phoneTextField.getText();
 
-        // Use db.properties file to access database
+        //use db.properties file to access database
         DatabaseManager databaseManager = new DatabaseManager();
-        // Assuming we have a connection to the database
         try (Connection connection = databaseManager.getConnection()) {
-            // Check if the user exists
+            //check if the user exists
             String sqlQuery = "SELECT * FROM users WHERE username = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
                 preparedStatement.setString(1, username);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {
-                    // User exists or passwords match, register failed
+                    //user exists, register failed
                     JOptionPane.showMessageDialog(parent, "A user with the same name already exists");
                     registerSuccessful = false;
                 } else {
-                    // User does not exist, it is good news
+                    //user does not exist, it is good news
                     if(!password.isEmpty() && !email.isEmpty())
                     {
                         String maxIdQuery = "SELECT MAX(id_user) AS highest_id_user FROM users";
@@ -107,7 +104,7 @@ public class RegisterScreen extends JDialog {
                                 highestId = maxIdResultSet.getInt("highest_id_user");
                             }
 
-                            // Calculate the new id_user for the next user
+                            //calculate the new id_user for the next user
                             int newIdUser = highestId + 1;
                             String insertQuery = "INSERT INTO users(id_user, username, password, email, phone_number) VALUES (?, ?, ?, ?, ?)";
                             try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
@@ -117,11 +114,11 @@ public class RegisterScreen extends JDialog {
                                 insertStatement.setString(4, email);
                                 insertStatement.setString(5, number);
 
-                                // Execute the insert query
+                                //execute the insert query
                                 int rowsAffected = insertStatement.executeUpdate();
 
                                 if (rowsAffected > 0) {
-                                    // User exists and passwords match, login successful
+                                    //user exists and passwords match, login successful
                                     User loggedInUser = User.createUser(
                                             newIdUser,
                                             username,
@@ -131,7 +128,7 @@ public class RegisterScreen extends JDialog {
                                             null
                                     );
                                     User.setCurrentUser(loggedInUser);
-                                    //Registration successful
+                                    //registration successful
                                     registerSuccessful = true;
                                 }
                                 else
@@ -144,7 +141,7 @@ public class RegisterScreen extends JDialog {
                             registerSuccessful = false;
                         }finally {
                             try {
-                                // Close ResultSet and PreparedStatement
+                                //close ResultSet and PreparedStatement
                                 resultSet.close();
                                 preparedStatement.close();
                             } catch (SQLException e) {

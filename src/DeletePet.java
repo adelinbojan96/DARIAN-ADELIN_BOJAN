@@ -11,7 +11,7 @@ public class DeletePet extends JDialog {
     private final JPanel mainPanel;
     public DeletePet(JFrame parent, Color backgroundColor, int id_store) {
         super(parent, "Delete Pet from Database", true);
-        //When user exists, current frame is gone, and they navigate to AnimalDisplayScreen again.
+        //when user exists, current frame is gone, and they navigate to AnimalDisplayScreen again.
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -20,7 +20,7 @@ public class DeletePet extends JDialog {
             }
         });
 
-        // Create a main panel with GridBagLayout
+        
         mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBackground(backgroundColor);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -29,30 +29,26 @@ public class DeletePet extends JDialog {
 
         JScrollPane scrollPane = new JScrollPane(mainPanel);
 
-        // Add the scroll pane to the content pane
+        
         getContentPane().add(scrollPane);
 
-        // Set size and make the dialog visible
+      
         setSize(1280, 720);
         setLocationRelativeTo(parent);
 
-        // Retrieve data from the database and display it
+        
         displayAnimalData(parent, id_store);
         setVisible(true);
     }
     private void displayAnimalData(JFrame parent, int id_store) {
-        // JDBC connection parameters (unchanged)
         DatabaseManager databaseManager = new DatabaseManager();
         try (Connection connection = databaseManager.getConnection()) {
-            // Create and execute the SQL query with a WHERE clause to filter by id_store
             String query = "SELECT id_pet, name, animal_type, breed, age, image FROM pet WHERE id_store = ?";
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setInt(1, id_store);
                 try (ResultSet resultSet = statement.executeQuery()) {
-
                     int animalCount = 0;
 
-                    // Iterate through the result set and add a custom AnimalPanel for each entry
                     while (resultSet.next()) {
                         int id = resultSet.getInt("id_pet");
                         String name = resultSet.getString("name");
@@ -66,7 +62,7 @@ public class DeletePet extends JDialog {
                         GridBagConstraints gbc = new GridBagConstraints();
                         gbc.gridx = animalCount % 3;  // Set to 3 for 3 columns per row
                         gbc.gridy = animalCount / 3;  // Set to 3 for 3 columns per row
-                        gbc.insets = new Insets(10, 10, 10, 10); // Spacing
+                        gbc.insets = new Insets(10, 10, 10, 10); // Meant for spacing
                         mainPanel.add(animalPanel, gbc);
 
                         animalCount++;
@@ -88,14 +84,14 @@ public class DeletePet extends JDialog {
             String breed = pet.getBreed();
             int age = pet.getAge();
 
-            setLayout(new BorderLayout()); // Use BorderLayout for the main layout
+            setLayout(new BorderLayout()); //main layout uses BorderLayout
 
             Color backgroundColor = Color.white;
-            // Left panel for image
+            //left panel for image
             JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             leftPanel.setBackground(backgroundColor);
 
-            ImageIcon placeholderIcon = createPlaceholderIcon(); // Create a placeholder ImageIcon
+            ImageIcon placeholderIcon = createPlaceholderIcon(); //create a placeholder ImageIcon
 
             ImageIcon imageIcon = pet.getImageIcon();
             Image scaledImage = (imageIcon != null) ?
@@ -104,8 +100,8 @@ public class DeletePet extends JDialog {
 
             ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
             JLabel imageLabel = new JLabel(scaledImageIcon);
-            Border blackBorder = BorderFactory.createLineBorder(Color.BLACK, 3); // Created thickness
-            imageLabel.setBorder(BorderFactory.createCompoundBorder(blackBorder, BorderFactory.createEmptyBorder(-1, -1, -1, -1))); // Add an empty border for better framing
+            Border blackBorder = BorderFactory.createLineBorder(Color.BLACK, 3); //created thickness
+            imageLabel.setBorder(BorderFactory.createCompoundBorder(blackBorder, BorderFactory.createEmptyBorder(-1, -1, -1, -1))); 
             leftPanel.add(imageLabel);
 
 
@@ -113,16 +109,16 @@ public class DeletePet extends JDialog {
             imageLabel.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    //Deletes a pet
+                    //deletes a pet from db
                     deletePet(parent, pet);
                 }
             });
 
-            // Right panel for details
+            //right panel for details
             JPanel rightPanel = new JPanel();
             rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
-            // Details panel with GridLayout to display details in independent rows
+            //details panel with GridLayout to display details in independent rows
             JPanel detailsPanel = new JPanel(new GridLayout(0, 1));
             detailsPanel.setBackground(backgroundColor);
             JLabel nameLabel = new JLabel(name);
@@ -141,14 +137,12 @@ public class DeletePet extends JDialog {
             detailsPanel.add(ageLabel);
 
             rightPanel.add(detailsPanel);
-            // Add left and right panels to the main panel
             add(leftPanel, BorderLayout.WEST);
             add(rightPanel, BorderLayout.CENTER);
 
             setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
         }
         private ImageIcon createPlaceholderIcon() {
-            // Create a placeholder image
             return new ImageIcon(Objects.requireNonNull(getClass().getResource("./Pictures/placeHolder.png")));
         }
     }
@@ -156,7 +150,7 @@ public class DeletePet extends JDialog {
     {
         DatabaseManager databaseManager = new DatabaseManager();
         try (Connection connection = databaseManager.getConnection()) {
-            // Check if the user exists
+            //check if the user exists
             String selectQuery = "SELECT * FROM pet_history WHERE id_history = (SELECT id_history FROM pet WHERE id_pet = ?)";
             try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
                 selectStatement.setInt(1, pet.getId());
@@ -167,7 +161,6 @@ public class DeletePet extends JDialog {
                 }
             }
         } catch (SQLException e) {
-            // Handle database connection or query execution errors
             JOptionPane.showMessageDialog(parent, "Error trying to access the database");
             e.printStackTrace();
         }
@@ -175,7 +168,6 @@ public class DeletePet extends JDialog {
     }
     private void deletePet(JFrame parent, Pet pet)
     {
-        // Ask for confirmation before deleting messages
         int option = JOptionPane.showConfirmDialog(parent, "Are you sure you want to delete " + pet.getName() + " from database?", "Confirmation", JOptionPane.YES_NO_OPTION);
         if(option == JOptionPane.YES_OPTION)
         {
@@ -193,7 +185,7 @@ public class DeletePet extends JDialog {
                     if (rowsAffected > 0) {
                         firstQuery = true;
                     } else {
-                        // Could not delete the rows
+                        //could not delete the rows
                         JOptionPane.showMessageDialog(parent, "Could not delete the rows for the pet");
                     }
                 } catch(SQLException e) {
@@ -208,7 +200,7 @@ public class DeletePet extends JDialog {
                         if (rowsAffected > 0) {
                             secondQuery = true;
                         } else {
-                            // Could not delete the rows
+                            //could not delete the rows
                             JOptionPane.showMessageDialog(parent, "Could not delete the rows from pet's history");
                         }
                     } catch(SQLException e) {
@@ -218,14 +210,14 @@ public class DeletePet extends JDialog {
                 }
                 else
                 {
-                    ///There is nothing to delete
+                    ///there is nothing to delete
                     secondQuery = true;
                 }
                 if(firstQuery && secondQuery)
                 {
-                    // Successfully deleted user
+                    //successfully deleted user
                     JOptionPane.showMessageDialog(parent, "Pet deleted successfully");
-                    // Access AnimalDisplayScreen
+                    //access AnimalDisplayScreen
                     dispose();
                     new AnimalDisplayScreen(null);
                 }
@@ -234,7 +226,7 @@ public class DeletePet extends JDialog {
                 System.out.println("The deletion could not be performed");
             }
         } else {
-            // User chose not to delete messages
+            //user could not to delete messages
             JOptionPane.showMessageDialog(parent, "Deletion canceled");
         }
     }

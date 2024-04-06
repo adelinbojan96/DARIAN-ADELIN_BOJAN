@@ -1,8 +1,8 @@
 import javax.swing.*;
 
 public record User(int id, String username, String password, String email, String phone, byte[] image) {
-    private static User currentUser;
-
+    private static User currentUser;  
+  
     public static User getCurrentUser() {
         return currentUser;
     }
@@ -15,7 +15,6 @@ public record User(int id, String username, String password, String email, Strin
     public static boolean isLoggedIn() {
         return currentUser != null;
     }
-
 
     public static void logout() {
         currentUser = null;
@@ -30,7 +29,6 @@ public record User(int id, String username, String password, String email, Strin
     public byte[] image() {
         return image;
     }
-
 
     public static User createUser(int id, String username, String password, String email, String phone, byte[] image) {
         return new User(id, username, password, email, phone, image);

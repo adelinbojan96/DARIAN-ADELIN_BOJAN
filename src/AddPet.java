@@ -37,7 +37,7 @@ public class AddPet extends JDialog {
         setModal(true);
         setLocationRelativeTo(parent);
 
-        // Add a black border for each field
+        //add a black border for each field
         storeBehaviour.setBorder(new LineBorder(Color.BLACK));
         storeTreatments.setBorder(new LineBorder(Color.BLACK));
         petName.setBorder(new LineBorder(Color.BLACK));
@@ -46,24 +46,24 @@ public class AddPet extends JDialog {
         petType.setBorder(new LineBorder(Color.BLACK));
         storeYears.setBorder(new LineBorder(Color.BLACK));
 
-        //Border for image
+        //border for image
         Border blackBorder = BorderFactory.createLineBorder(Color.BLACK, 3);
         profileImage.setBorder(BorderFactory.createCompoundBorder(blackBorder, BorderFactory.createEmptyBorder(-1, -1, -1, -1)));
-        imageData = null;//Set null at the beginning
+        imageData = null;//set null at the beginning
 
         customizeButton(buttonPicture);
         customizeButton(buttonAdd);
         buttonPicture.addActionListener(e -> {
-            // Display a file chooser dialog
+            //display a file chooser dialog
             JFileChooser fileChooser = new JFileChooser();
             int result = fileChooser.showOpenDialog(AddPet.this);
 
             if (result == JFileChooser.APPROVE_OPTION) {
-                // Get the selected file
+                //get the selected file
                 File selectedFile = fileChooser.getSelectedFile();
 
                 try {
-                    // Check if the selected file is an image
+                    //check if the selected file is an image
                     if (isImageFile(selectedFile)) {
                         imageData = Files.readAllBytes(selectedFile.toPath());
                         profileImage.setIcon(resizeImage(imageData));
@@ -98,7 +98,7 @@ public class AddPet extends JDialog {
             try {
                 years = Integer.parseInt(yearsString);
             } catch (NumberFormatException eAge) {
-                //Can no longer have history for pet
+                //can no longer have history for pet
                 canUseYears = false;
             }
 
@@ -111,9 +111,9 @@ public class AddPet extends JDialog {
 
                 if(!behaviour.isEmpty() && canUseYears)
                 {
-                    //We add in history as well
+                    //we add in history as well
                     int idHistory = addHistoryInDatabase(parent, years, behaviour, medicalInfo);
-                    //Create history first, then we add animal
+                    //create history first, then we add animal
                     successfullyAdded = addPetInDatabase(parent, name, type, breed, age, idHistory, imageData);
                 }
                 else
@@ -126,7 +126,7 @@ public class AddPet extends JDialog {
                 JOptionPane.showMessageDialog(parent, "Please fill at least the Pet Name, Type, Breed and Age");
             if(successfullyAdded)
             {
-                //Refresh the animalDisplayScreen
+                //refresh the animalDisplayScreen
                 dispose();
                 if(animalDisplayScreen!=null)
                     animalDisplayScreen.dispose();
@@ -148,12 +148,12 @@ public class AddPet extends JDialog {
                 if (maxIdResultSet.next()) {
                     highestId = maxIdResultSet.getInt("highest_id_history");
                 }
-                // Calculate the new id_user for the next user
+                //calculate the new id_user for the next user
                 int newIdHistory = highestId + 1;
-                // Create and execute the SQL query to insert a new pet
+                //create and execute the SQL query to insert a new pet
                 String insertQuery = "INSERT INTO pet_history (id_history, years_in_shop, previous_health_issues, pet_behaviour_desc, previous_medical_treatment_desc) VALUES (?, ?, ?, ?, ?)";
                 try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
-                    // Set the values for the parameters in the query
+                    
                     insertStatement.setInt(1, newIdHistory);
                     insertStatement.setInt(2, years);
                     insertStatement.setBoolean(3, !medicalInfo.isEmpty());
@@ -162,14 +162,14 @@ public class AddPet extends JDialog {
                         insertStatement.setString(5, medicalInfo);
                     else
                         insertStatement.setString(5, null);
-                    // Execute the insert query
+                    //insert query
                     int rowsAffected = insertStatement.executeUpdate();
 
                     if (rowsAffected > 0) {
-                        // History added successfully
+                        //history added successfully
                         return newIdHistory;
                     } else {
-                        // History not added, handle the error
+                        //history not added
                         JOptionPane.showMessageDialog(parent, "Error adding pet to the database.", "Error", JOptionPane.ERROR_MESSAGE);
                         return -1;
                     }
@@ -181,7 +181,6 @@ public class AddPet extends JDialog {
                 e.printStackTrace();
             }
         } catch (SQLException e) {
-            // Handle any SQL-related errors
             JOptionPane.showMessageDialog(parent, "Error connecting to the database.", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
@@ -201,12 +200,10 @@ public class AddPet extends JDialog {
                 if (maxIdResultSet.next()) {
                     highestId = maxIdResultSet.getInt("highest_id_pet");
                 }
-                // Calculate the new id_user for the next user
                 int newIdPet = highestId + 1;
-                // Create and execute the SQL query to insert a new pet
                 String insertQuery = "INSERT INTO pet (id_pet, name, animal_type, breed, age, id_store, id_history, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                 try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
-                    // Set the values for the parameters in the query
+                    
                     insertStatement.setInt(1, newIdPet);
                     insertStatement.setString(2, name);
                     insertStatement.setString(3, type);
@@ -223,12 +220,12 @@ public class AddPet extends JDialog {
                     int rowsAffected = insertStatement.executeUpdate();
 
                     if (rowsAffected > 0) {
-                        // Pet added successfully
+                        //pet added successfully
                         JOptionPane.showMessageDialog(parent, "Pet added successfully!");
-                        // If successful, then we will return true
+                        //if successful, then we will return true
                         return true;
                     } else {
-                        // Pet not added, handle the error
+                        //pet not added
                         JOptionPane.showMessageDialog(parent, "Error adding pet to the database.", "Error", JOptionPane.ERROR_MESSAGE);
                         return false;
                     }
@@ -240,20 +237,18 @@ public class AddPet extends JDialog {
                 e.printStackTrace();
             }
         } catch (SQLException e) {
-            // Handle any SQL-related errors
+    
             JOptionPane.showMessageDialog(parent, "Error connecting to the database.", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
 
         }
         return false;
     }
-    // Method to check if the selected file is an image
     private boolean isImageFile(File file) {
         String fileName = file.getName().toLowerCase();
         return fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".png") || fileName.endsWith(".gif");
     }
     private ImageIcon resizeImage(byte[] imageData) {
-        // Resize the image
         ImageIcon imageIcon = new ImageIcon(imageData);
         Image originalImage = imageIcon.getImage();
         Image resizedImage = originalImage.getScaledInstance(240, 180, Image.SCALE_SMOOTH);
