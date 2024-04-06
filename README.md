@@ -1,5 +1,5 @@
 Description:
-The Pet Adoption Platform is a Java application designed to facilitate the adoption process for animals in need of homes. It serves as a centralized platform where users can search for available animals, submit adoption applications, and communicate with shelters or adoption agencies. The platform also provides a messaging system to streamline communication between users and adoption organizations.
+The Pet Adoption Platform is a Java application which uses an SQL database designed to facilitate the adoption process for animals in need of homes. It serves as a centralized platform where users can search for available animals, submit adoption applications, and communicate with shelters or adoption agencies. The platform also provides a messaging system to streamline communication between users and adoption organizations.
 
 Key Features:
 Animal Listings: Search through a variety of animals available for adoption, checking for the desired characteristics.
